@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapActivity">
+
+    <android.support.v4.widget.DrawerLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.alan.gilton.NavigationDrawer"
+        android:id="@+id/drawer_layout"
+        android:textAlignment="center">
+
+        <!-- The navigation drawer -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:id="@+id/informationLayout"
+                android:background="@drawable/travel_location"
+                android:weightSum="1">
+
+                <LinearLayout
+                    android:layout_width="85dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/travel"
+                        android:id="@+id/textView6"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:onClick="onClickTravel"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="0.21" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NAVEGA"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
+
+                <TextView
+                    style="@style/regular_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:text="@string/init_string"
+                    android:id="@+id/locationText"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:textColor="@android:color/darker_gray"/>
+            </LinearLayout>
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                class="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                tools:context=".MapActivity"
+                android:layout_weight="1.00" />
+
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/regular_text"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="30"
+                android:text="@string/init_string"
+                android:id="@+id/statusDisplay"
+                android:onClick="onClickChangeStatus"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@android:color/darker_gray"
+                android:background="#FFFFFF"/>
+            <TextView
+                style="@style/regular_text"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="70"
+                android:text="@string/cancel"
+                android:id="@+id/cancelDisplay"
+                android:onClick="onClickCancel"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:background="@android:color/holo_red_light"/>
+        </LinearLayout>
+        </LinearLayout>
+
+        <ListView
+        android:id="@+id/menuList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:background="@drawable/background_menu"
+        android:divider="@android:color/white"/>
+
+    </android.support.v4.widget.DrawerLayout>
+
+</RelativeLayout>

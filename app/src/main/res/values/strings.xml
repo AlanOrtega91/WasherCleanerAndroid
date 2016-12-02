@@ -1,0 +1,96 @@
+<resources>
+    <string name="app_name">Washer Lavador</string>
+    <string name="app_name_display">WASHER</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDo0Q6H4n991pIl794d5q9zfxiUgi8sxcA</string>
+    <string name="title_activity_login">INICIAR SESION</string>
+    <string name="init_string">-</string>
+    <string name="back">ATRAS</string>
+    <string name="summary_continue">CONTINUAR</string>
+
+    <string name="error_invalid_email">EL CORREO ELECTRONICO ES INVALIDO</string>
+    <string name="error_invalid_password">LA CONSTRASEÑA ES MUY CORTA</string>
+    <string name="error_incorrect_password">CONTRASEÑA INVALIDA</string>
+    <string name="error_field_required">TODOS LOS CAMPOS SON REQUERIDOS</string>
+
+    <!-- Strings related to Main -->
+    <string name="log_in_button">INICIAR SESIÓN</string>
+    <!-- Strings related to Login -->
+    <string name="log_in_title">INICIAR SESIÓN</string>
+    <string name="hint_email">ejemplo@mail.com</string>
+    <string name="hint_password">Contraseña</string>
+    <string name="forgot_password">¿OLVIDASTE TU CONTRASEÑA?</string>
+    <string name="cancel">CANCELAR</string>
+    <string name="ok">LISTO</string>
+    <string name="save">GUARDAR</string>
+
+    <!-- Strings related to Forgot Password -->
+    <string name="forgot_password_description">Introduzca su correo electrónico y le enviaremos un enlace para restablecer su contraseña.</string>
+    <string name="recover_password_button">RESTABLECER CONTRASEÑA</string>
+    <string name="forgot_password_title">OLVIDASTE TU CONTRASEÑA</string>
+
+
+    <string name="travel">VIAJAR</string>
+    <string name="information">INFORMACIÓN</string>
+
+    <!-- Strings related to the Service -->
+    <string name="looking">Buscando servicios</string>
+    <string name="accept">ACEPTAR</string>
+    <string name="start">INICIAR SERVICIO</string>
+    <string name="time_remaining">TIEMPO RESTANTE: </string>
+    <string name="finish">TERMINAR</string>
+    <string name="canceled">CANCELADO</string>
+    <string name="notify_canceled">El servicio fue cancelado</string>
+    <!-- Strings related to Menu -->
+    <string name="menu_button">Menu</string>
+    <string-array name="menu_options">
+        <item name="account_information_title">SERVICIOS RECIENTES</item>
+        <item name="products_title">PRODUCTOS</item>
+        <item name="log_out">CERRAR SESIÓN</item>
+    </string-array>
+    <string name="history">HISTORIAL</string>
+    <string name="products_title">PRODUCTOS</string>
+    <string name="close">CERRAR</string>
+
+
+    <string name="log_out">CERRAR SESIÓN</string>
+
+
+    <!-- Strings related to Summary -->
+    <string name="summary_title">RESUMEN</string>
+    <string name="summary_description">Resumen del servicio</string>
+    <!-- Strings related to errors -->
+    <string name="invalid_email">Correo electronico invalido</string>
+    <string name="invalid_password">Contraseña invalida, debe ser al menos 6 caracteres de largo</string>
+    <string name="invalid_password_dont_march">Las contraseñas no coinciden</string>
+    <string name="error_registering_user">Error al registrar un usuario nuevo</string>
+    <string name="error_logging_in">Error al iniciar sesion</string>
+    <string name="error_reading_service">Error al leer servicio</string>
+
+    <string name="time_ran_out">Se termino el tiempo</string>
+    <string name="error_refilling_product">Error rellenando productos</string>
+    <!-- Products -->
+    <string name="soap">Jabon</string>
+    <string name="polish">Polish</string>
+    <string name="refill">Refill</string>
+    <string name="price">$%s</string>
+    <string name="services_found">Servicios encontrados</string>
+    <string name="error_reading_user">Error leyendo usuario</string>
+    <string name="error_opening_service_summary">Error leyendo resumen del servicio</string>
+    <string name="user_name">%1$s %2$s</string>
+    <string name="no_location_service">Esta aplicacion no puede funcionar sin la ubicacion habilitada</string>
+    <string name="init_date_string">0000/00/00 00:00 AM</string>
+    <string name="accepting">Aceptando...</string>
+    <string name="session_error">Error de sesion</string>
+    <string name="image_description">Imagen Usuario</string>
+    <string name="account">Cuenta</string>
+
+    <array name="products">
+        <item>Eco</item>
+        <item>Shampoo</item>
+        <item>Vinil</item>
+        <item>Rines</item>
+        <item>Vidrios</item>
+        <item>Vestiduras</item>
+        <item>Aromatizante</item>
+    </array>
+</resources>
