@@ -84,6 +84,7 @@
     <string name="image_description">Imagen Usuario</string>
     <string name="account">CUENTA</string>
     <string name="x">X</string>
+    <string name="rated">Fuiste calificado</string>
 
     <array name="products">
         <item>Eco</item>

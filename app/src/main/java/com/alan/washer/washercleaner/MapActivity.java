@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -30,7 +27,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -45,7 +41,6 @@ import android.widget.Toast;
 
 import com.alan.washer.washercleaner.model.AppData;
 import com.alan.washer.washercleaner.model.Database.DataBase;
-import com.alan.washer.washercleaner.model.PathLine;
 import com.alan.washer.washercleaner.model.ProfileReader;
 import com.alan.washer.washercleaner.model.Service;
 import com.alan.washer.washercleaner.model.User;
@@ -54,15 +49,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -127,7 +117,9 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         Intent serviceIntent = new Intent(getBaseContext(),LocationServiceInfinite.class);
+        Intent firebaseIntent = new Intent(getBaseContext(),FirebaseMessagingService.class);
         startService(serviceIntent);
+        startService(firebaseIntent);
         initView();
         initLocation();
         initThreads();
@@ -273,7 +265,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                         if (diff < 0) {
                             display = getString(R.string.finish);
                             if (!alertSent) {
-                                if (settings.getBoolean(AppData.IN_BACKGROUND,false)) AlarmNotification.sendNotification(getBaseContext(), getString(R.string.time_ran_out), MapActivity.class);
+                                if (settings.getBoolean(AppData.IN_BACKGROUND,false)) AlarmNotification.notify(getBaseContext(), getString(R.string.time_ran_out), MapActivity.class);
                                 alertSent = true;
                             }
                         }
@@ -424,7 +416,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         leftButton.setText(R.string.account);
         rightButton.setText(R.string.information);
         title.setText(R.string.app_name_display);
-        title.setTextColor(Color.rgb(6,140,135));
+        title.setTextColor(Color.rgb(7,96,53));
         rightButton.setOnClickListener(this);
         leftButton.setOnClickListener(this);
     }
@@ -464,7 +456,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 public void run() {
                     locationMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
                     TextView title = (TextView) findViewById(R.id.titleOptionsTitlebar);
-                    title.setTextColor(Color.rgb(6,140,135));
+                    title.setTextColor(Color.rgb(7,96,53));
                 }
             });
         } catch (errorReadingLocation e){
@@ -490,7 +482,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 @Override
                 public void run() {
                     TextView title = (TextView) findViewById(R.id.titleOptionsTitlebar);
-                    title.setTextColor(Color.rgb(6,140,135));
+                    title.setTextColor(Color.rgb(7,96,53));
                 }
             });
         } catch (errorReadingLocation e){
@@ -664,7 +656,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 if (servicesAmount == 0 && services.size() != 0) {
                     //TODO: check for double noti
                     if (settings.getBoolean(AppData.IN_BACKGROUND, false))
-                        AlarmNotification.sendNotification(getBaseContext(), getString(R.string.services_found), MapActivity.class);
+                        AlarmNotification.notify(getBaseContext(), getString(R.string.services_found), MapActivity.class);
                 }
             } catch (Service.errorGettingServices e) {
                 Log.i("SERVICE", "Error getting nearby requests try again later");
@@ -781,7 +773,9 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         try {
             ProfileReader.delete(getBaseContext());
             Intent serviceIntent = new Intent(getBaseContext(),LocationServiceInfinite.class);
+            Intent firebaseIntent = new Intent(getBaseContext(),FirebaseMessagingService.class);
             stopService(serviceIntent);
+            stopService(firebaseIntent);
             MapActivity.instance.finish();
             MainActivity.onScreen = true;
             changeActivity(MainActivity.class);

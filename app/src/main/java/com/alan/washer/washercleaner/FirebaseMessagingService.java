@@ -25,16 +25,23 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         if (remoteMessage.getData().get("state") == null)
             return;
         String state = remoteMessage.getData().get("state");
+        String message;
         switch (state){
             case "-1":
+                message = getString(R.string.rated);
                 String rating = remoteMessage.getData().get("rating");
                 User user = new DataBase(getBaseContext()).readUser();
                 user.rating = Double.valueOf(rating);
                 new DataBase(getBaseContext()).saveUser(user);
+                if (inBackground)
+                    AlarmNotification.notify(getBaseContext(), message, InitActivity.class);
                 break;
             case "6":
-                if (!inBackground)
-                    sendPopUp(getString(R.string.notify_canceled));
+                message = getString(R.string.notify_canceled);
+                if (inBackground)
+                    AlarmNotification.notify(getBaseContext(), message, InitActivity.class);
+                else
+                    sendPopUp(message);
                 String serviceJson = remoteMessage.getData().get("serviceInfo");
                 if (serviceJson == null)
                     return;

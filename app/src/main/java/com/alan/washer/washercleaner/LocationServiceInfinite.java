@@ -103,7 +103,7 @@ public class LocationServiceInfinite extends Service {
                 services = com.alan.washer.washercleaner.model.Service.getServices(location.getLatitude(), location.getLongitude(), settings.getString(AppData.TOKEN,null));
                 if (servicesAmount == 0 && services.size() != 0) {
                     if (settings.getBoolean(AppData.IN_BACKGROUND, false)) {
-                        AlarmNotification.sendNotification(getBaseContext(), getString(R.string.services_found), InitActivity.class);
+                        AlarmNotification.notify(getBaseContext(), getString(R.string.services_found), InitActivity.class);
                     }
                 }
             } catch (com.alan.washer.washercleaner.model.Service.errorGettingServices e) {

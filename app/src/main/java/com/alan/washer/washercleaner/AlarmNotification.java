@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
@@ -15,15 +17,16 @@ public class AlarmNotification {
 
     private static final String NOTIFICATION_TAG = "Alarm";
 
-    public static void sendNotification(final Context context, final String info, Class activityClass) {
+    static void notify(final Context context, final String info, Class activityClass) {
         final String title = "Washer";
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(),R.drawable.appicon);
-
+        Uri sound= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Intent intent = new Intent(context,activityClass);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setDefaults(Notification.DEFAULT_ALL)
+                .setVibrate(new long[]{0, 500, 250, 500})
+                .setSound(sound)
                 .setSmallIcon(R.drawable.logo)
                 .setLargeIcon(icon)
                 .setContentTitle(title)
