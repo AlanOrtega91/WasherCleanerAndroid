@@ -74,7 +74,7 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
             menuTitle.setText(R.string.products_title);
         }
         if (menuButton != null) {
-            menuButton.setText(R.string.close);
+            menuButton.setText(R.string.menu_button);
             menuButton.setOnClickListener(this);
         }
     }
@@ -100,7 +100,7 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
                 }
             });
         } catch (Product.errorGettingProducts e) {
-            postAlert("Error reading product info");
+            postAlert("Error leyendo información de productos");
         } catch (Product.noSessionFound e){
             postAlert(getString(R.string.session_error));
             MapActivity.instance.finish();

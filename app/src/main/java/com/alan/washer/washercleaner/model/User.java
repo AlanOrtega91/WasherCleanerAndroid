@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -104,7 +102,7 @@ public class User {
 
     static Bitmap getEncodedStringImageForUser(String id) {
         try {
-            URL url = new URL("http://192.168.0.7/Vashen/images/cleaners/" + id + "/profile_image.jpg");
+            URL url = new URL("http://washer.mx/Vashen/images/cleaners/" + id + "/profile_image.jpg");
             InputStream is = url.openStream();
             BufferedInputStream bis = new BufferedInputStream(is);
             Bitmap bm = BitmapFactory.decodeStream(bis);
@@ -134,7 +132,9 @@ public class User {
             return null;
         } finally {
             try {
-                fos.close();
+                if (fos != null) {
+                    fos.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -22,7 +22,7 @@ import cz.msebera.android.httpclient.impl.client.HttpClients;
 class HttpServerConnection
 {
     static String buildURL(String location) {
-        return "http://192.168.0.7/Vashen/API/" + location + "/";
+        return "http://washer.mx/Vashen/API/" + location + "/";
     }
 
     static String sendHttpRequestPost(String urlPath, List<NameValuePair> params) throws connectionException {

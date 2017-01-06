@@ -68,7 +68,7 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
         TextView menuButton = (TextView)findViewById(R.id.menuButton);
         TextView menuTitle = (TextView)findViewById(R.id.menuTitle);
         menuTitle.setText(R.string.history);
-        menuButton.setText(R.string.close);
+        menuButton.setText(R.string.menu_button);
         menuButton.setOnClickListener(this);
     }
 

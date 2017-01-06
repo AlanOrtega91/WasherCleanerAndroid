@@ -53,7 +53,7 @@
                 </LinearLayout>
 
                 <TextView
-                    style="@style/regular_text"
+                    style="@style/text_style"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:text="@string/init_string"
@@ -83,7 +83,7 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/regular_text"
+                style="@style/text_style"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="30"
@@ -96,7 +96,7 @@
                 android:textColor="@android:color/darker_gray"
                 android:background="#FFFFFF"/>
             <TextView
-                style="@style/regular_text"
+                style="@style/text_style"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="70"

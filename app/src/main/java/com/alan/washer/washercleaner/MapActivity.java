@@ -22,6 +22,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -59,6 +61,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -115,8 +119,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     List<Service> services = new ArrayList<>();
     String token;
     Thread activeServiceCycleThread;
-    int lastStateSent = -1;
     public static AppCompatActivity instance;
+    Boolean changingStatus = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,7 +265,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 clock.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        if (activeService == null || activeService.finalTime == null)
+                        if (activeService == null || activeService.finalTime == null || changingStatus)
                             return;
                         String display;
                         long diff = Service.getDifferenceTimeInMillis(activeService.finalTime);
@@ -269,7 +273,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                         if (diff < 0) {
                             display = getString(R.string.finish);
                             if (!alertSent) {
-                                if (settings.getBoolean(AppData.IN_BACKGROUND,false)) AlarmNotification.notify(getBaseContext(), getString(R.string.time_ran_out), MapActivity.class);
+                                if (settings.getBoolean(AppData.IN_BACKGROUND,false)) AlarmNotification.sendNotification(getBaseContext(), getString(R.string.time_ran_out), MapActivity.class);
                                 alertSent = true;
                             }
                         }
@@ -342,7 +346,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     private void configureServiceForDelete() {
         if (clock != null) clock.cancel();
-        String prueba = settings.getString(AppData.MESSAGE, "");
         if (settings.getString(AppData.MESSAGE, "").equals(getString(R.string.notify_canceled))) {
             if (!settings.getBoolean(AppData.IN_BACKGROUND, false)) {
                 handler.post(new Runnable() {
@@ -378,7 +381,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         //TODO: make header full width
         String[] titles = getResources().getStringArray(R.array.menu_options);
         Collections.addAll(navigationItems, titles);
-        listItems.add(Pair.create(titles[0], ContextCompat.getDrawable(getBaseContext(),R.drawable.hist_icon)));
+        listItems.add(Pair.create(titles[0], ContextCompat.getDrawable(getBaseContext(),R.drawable.history_icon)));
         listItems.add(Pair.create(titles[1], ContextCompat.getDrawable(getBaseContext(),R.drawable.products_icon)));
         listItems.add(Pair.create(titles[2], ContextCompat.getDrawable(getBaseContext(),R.drawable.line_white)));
         final MenuAdapter adapter = new MenuAdapter();
@@ -455,20 +458,24 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     private void updateLocationMarker() {
         try {
-            Criteria crit = new Criteria();
-            crit.setAccuracy(Criteria.ACCURACY_FINE);
-            String provider = locationManager.getBestProvider(crit, true);
-            final Location location = locationManager.getLastKnownLocation(provider);
-            if (location == null)
-                return;
+            final Location location = getBestKnownLocation();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     locationMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+                    TextView title = (TextView) findViewById(R.id.titleOptionsTitlebar);
+                    title.setTextColor(Color.rgb(6,140,135));
                 }
             });
-        } catch (SecurityException e){
-
+        } catch (errorReadingLocation e){
+            Log.i("Error","Error leyendo la ubicacion");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    TextView title = (TextView) findViewById(R.id.titleOptionsTitlebar);
+                    title.setTextColor(Color.RED);
+                }
+            });
         }
     }
 
@@ -477,19 +484,24 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             return;
         }
         try {
-            //TODO: current location
-            Criteria crit = new Criteria();
-            crit.setAccuracy(Criteria.ACCURACY_FINE);
-            String provider = locationManager.getBestProvider(crit,true);
-            Location location = locationManager.getLastKnownLocation(provider);
-            if (location == null){
-                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (location == null)
-                    return;
-            }
+            Location location = getBestKnownLocation();
             User.updateLocation(token, location.getLatitude(), location.getLongitude());
-        } catch (SecurityException e){
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    TextView title = (TextView) findViewById(R.id.titleOptionsTitlebar);
+                    title.setTextColor(Color.rgb(6,140,135));
+                }
+            });
+        } catch (errorReadingLocation e){
             Log.i("LOCATION","Error updating Location security");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    TextView title = (TextView) findViewById(R.id.titleOptionsTitlebar);
+                    title.setTextColor(Color.RED);
+                }
+            });
         } catch (User.errorUpdatingLocation e) {
             Log.i("LOCATION","Error updating Location");
         } catch (User.noSessionFound e){
@@ -499,14 +511,39 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    private Location getBestKnownLocation () throws errorReadingLocation{
+        Location location;
+        try {
+            if (( location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)) != null) {
+                long locationTime = (SystemClock.elapsedRealtimeNanos() - location.getElapsedRealtimeNanos()) * 1000 * 1000;
+                if (locationTime > 30 && locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) != null) {
+                    return locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                } else {
+                    throw new errorReadingLocation();
+                }
+            } else if (( location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)) != null){
+                long locationTime = (SystemClock.elapsedRealtimeNanos() - location.getElapsedRealtimeNanos()) * 1000 * 1000;
+                if (locationTime > 30 && locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER) != null) {
+                    return locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                } else {
+                    throw new errorReadingLocation();
+                }
+            } else {
+                throw new errorReadingLocation();
+            }
+        } catch (SecurityException e) {
+            throw new errorReadingLocation();
+        }
+    }
+
 
     public void onClickChangeStatus(View view) {
         if (activeService == null)
             tryAcceptService();
         else if (activeService.status.equals("Accepted"))
-            changeServiceStatus(Service.STARTED,"Started","Empezando...");
+            changeServiceStatus(Service.STARTED,"Started","EMPEZANDO...");
         else if (activeService.status.equals("Started"))
-            changeServiceStatus(Service.FINISHED,"Finished","Termiando...");
+            changeServiceStatus(Service.FINISHED,"Finished","TERMINANDO...");
     }
 
     private void changeServiceStatus(final int status, final String statusString, String statusMessage) {
@@ -515,11 +552,12 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void run() {
                 try {
-                    if (lastStateSent == status)
+                    if (changingStatus)
                         return;
-                    lastStateSent = status;
+                    changingStatus = true;
                     //TODO:implement fast change with db
                     Service.changeServiceStatus(activeService.id, String.valueOf(status), token);
+                    changingStatus = false;
                     List<Service> services = new DataBase(getBaseContext()).readServices();
                     for (int i = 0; i<services.size();i++){
                         if (services.get(i).id.equals(activeService.id)) {
@@ -541,7 +579,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     AppData.notifyNewData(settings,true);
                 } catch (Service.errorChangingStatusRequest e) {
                     postAlert("Error changing status");
-                    lastStateSent = -1;
+                    changingStatus = false;
                 }  catch (Service.noSessionFound e){
                     if (!MainActivity.onScreen && settings.getString(AppData.TOKEN,null) != null) postAlert(getString(R.string.session_error));
                     changeActivity(MainActivity.class);
@@ -566,17 +604,17 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     private void cancelService(){
         try{
             Service.cancelService(activeService.id,token);
-            List<Service> services = new DataBase(getBaseContext()).readServices();
-            for (int i = 0; i<services.size();i++){
-                if (services.get(i).id.equals(activeService.id)) {
-                    services.get(i).status = "Canceled";
-                    services.remove(i);
-                }
-            }
-            new DataBase(getBaseContext()).saveServices(services);
-            AppData.saveIdService(settings,null);
-            AppData.saveMessage(settings,"Canceled");
-            AppData.notifyNewData(settings,true);
+//            List<Service> services = new DataBase(getBaseContext()).readServices();
+//            for (int i = 0; i<services.size();i++){
+//                if (services.get(i).id.equals(activeService.id)) {
+//                    services.get(i).status = "Canceled";
+//                    services.remove(i);
+//                }
+//            }
+//            new DataBase(getBaseContext()).saveServices(services);
+//            AppData.saveIdService(settings,null);
+//            AppData.saveMessage(settings,"Canceled");
+//            AppData.notifyNewData(settings,true);
         } catch (Service.errorCancelingRequest e){
             postAlert("Error canceling request");
         } catch (Service.noSessionFound e){
@@ -626,7 +664,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 if (servicesAmount == 0 && services.size() != 0) {
                     //TODO: check for double noti
                     if (settings.getBoolean(AppData.IN_BACKGROUND, false))
-                        AlarmNotification.notify(getBaseContext(), getString(R.string.services_found), MapActivity.class);
+                        AlarmNotification.sendNotification(getBaseContext(), getString(R.string.services_found), MapActivity.class);
                 }
             } catch (Service.errorGettingServices e) {
                 Log.i("SERVICE", "Error getting nearby requests try again later");
@@ -638,32 +676,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-
-    private void drawPath() {
-        //TODO: Chance puedo borrar esta funcion
-        if (map == null)
-            return;
-        if (activeService == null) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        serviceMarker.setVisible(false);
-                    }
-                });
-            return;
-        }
-        try {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    serviceMarker.setVisible(true);
-                    serviceMarker.setPosition(new LatLng(activeService.latitud, activeService.longitud));
-                }
-            });
-        } catch (Exception e) {
-            postAlert("Error tracing route");
-        }
-    }
     int limit = 0;
     private void getGeoLocation() {
         limit++;
@@ -692,6 +704,15 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 @Override
                 public void run() {
                     locationText.setText(address + ", " + suburb + ", " + city + ", " + state + ", " + country);
+                    DataBase db = new DataBase(getBaseContext());
+                    List<Service> services = db.readServices();
+                    int i;
+                    for (i = 0; i < services.size() ; i++) {
+                        if (services.get(i).id.equals(activeService.id))
+                            break;
+                    }
+                    services.get(i).address = address + ", " + suburb + ", " + city + ", " + state + ", " + country;
+                    db.saveServices(services);
                 }
             });
         } catch (Exception e) {
@@ -704,7 +725,9 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onMapReady(GoogleMap googleMap) {
         try {
-            BitmapDescriptor cleanerImage = BitmapDescriptorFactory.fromResource(R.drawable.washer);
+            BitmapDrawable cleanerDrawable = (BitmapDrawable) ContextCompat.getDrawable(getBaseContext(),R.drawable.washer_bike);
+            Bitmap b = cleanerDrawable.getBitmap();
+            Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 60, 60, false);
             map = googleMap;
             //Change to false to delete location icon
             map.setMyLocationEnabled(true);
@@ -717,24 +740,18 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     .position(new LatLng(0, 0))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             serviceMarker.setVisible(false);
-            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (lastKnownLocation == null)
-                if ((lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)) == null) {
-                    locationMarker = map.addMarker(new MarkerOptions()
-                            .position(new LatLng(0, 0))
-                            .icon(cleanerImage));
-                    createAlert(getString(R.string.no_location_service));
-                    return;
-                }
+            locationMarker = map.addMarker(new MarkerOptions()
+                    .position(new LatLng(0, 0))
+                    .icon(BitmapDescriptorFactory.fromBitmap(bitmapResized)));
+            Location lastKnownLocation = getBestKnownLocation();
             currentLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation, 15);
             map.moveCamera(cameraUpdate);
-            locationManager.removeUpdates(this);
-            locationMarker = map.addMarker(new MarkerOptions()
-                    .position(currentLocation)
-                    .icon(cleanerImage));
+            locationMarker.setPosition(currentLocation);
+        } catch (errorReadingLocation e){
+            createAlert(getString(R.string.no_location_service));
         } catch (SecurityException e) {
-            postAlert("Error loading map");
+            createAlert(getString(R.string.no_location_service));
         }
     }
 
@@ -781,6 +798,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             super(MapActivity.this,R.layout.menu_item,R.id.listItemName,listItems);
         }
 
+        @NonNull
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View itemView = convertView;
@@ -875,6 +893,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                 Uri.parse("http://maps.google.com/maps?daddr=" + activeService.latitud + "," + activeService.longitud));
         startActivity(intent);
+    }
+    static class errorReadingLocation extends Throwable {
     }
 }
 

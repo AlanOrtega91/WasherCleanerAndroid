@@ -18,7 +18,7 @@ import java.util.List;
 public class DataBase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Gilton.db";
-    private static final int DATABASE_VERSION = 2
+    private static final int DATABASE_VERSION = 1;
             ;
     private static final String TEXT_TYPE = " TEXT";
     private static final String DECIMAL_TYPE = " DECIMAL(1,1)";
@@ -54,6 +54,7 @@ public class DataBase extends SQLiteOpenHelper {
                     ServiceEntry.BRAND + TEXT_TYPE + COMMA_SEP +
                     ServiceEntry.COLOR + TEXT_TYPE + COMMA_SEP +
                     ServiceEntry.TYPE + TEXT_TYPE + COMMA_SEP +
+                    ServiceEntry.ADDRESS + TEXT_TYPE + COMMA_SEP +
                     ServiceEntry.ESTIMATED_TIME + TEXT_TYPE +
                     " )";
 
@@ -161,6 +162,7 @@ public class DataBase extends SQLiteOpenHelper {
             row.put(ServiceEntry.BRAND,service.brand);
             row.put(ServiceEntry.COLOR,service.color);
             row.put(ServiceEntry.TYPE,service.type);
+            row.put(ServiceEntry.ADDRESS,service.address);
 
             if (service.finalTime != null) {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -195,6 +197,7 @@ public class DataBase extends SQLiteOpenHelper {
                 service.brand = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.BRAND));
                 service.color = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.COLOR));
                 service.type = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.TYPE));
+                service.address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ADDRESS));
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss");
                 try {
                     service.finalTime = format.parse(cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.FINAL_TIME)));
@@ -242,6 +245,7 @@ public class DataBase extends SQLiteOpenHelper {
                 service.brand = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.BRAND));
                 service.color = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.COLOR));
                 service.type = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.TYPE));
+                service.address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ADDRESS));
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     service.finalTime = format.parse(cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.FINAL_TIME)));
@@ -288,6 +292,7 @@ public class DataBase extends SQLiteOpenHelper {
                 service.brand = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.BRAND));
                 service.color = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.COLOR));
                 service.type = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.TYPE));
+                service.address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ADDRESS));
 
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
@@ -334,5 +339,6 @@ public class DataBase extends SQLiteOpenHelper {
         public static final String BRAND = "brand";
         public static final String COLOR = "color";
         public static final String TYPE = "type";
+        public static final String ADDRESS = "address";
     }
 }

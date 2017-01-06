@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.alan.washer.washercleaner.MainActivity"
-    android:background="@drawable/background"
+    android:background="@drawable/background_main"
     android:gravity="center|bottom">
 
     <ImageView
@@ -27,16 +27,12 @@
         android:textStyle="bold" />
 
     <Button
+        style="@style/button_style"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
         android:text="@string/log_in_button"
         android:id="@+id/logIn"
         android:layout_marginTop="40dp"
-        android:textSize="17.5dp"
-        android:layout_gravity="center"
         android:onClick="changeToLogIn"
-        android:textColor="@android:color/darker_gray"
-        android:background="@android:color/white"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginBottom="10dp"/>

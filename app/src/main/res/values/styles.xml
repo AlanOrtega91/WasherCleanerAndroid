@@ -6,7 +6,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@android:color/black</item>
-        <item name="android:actionBarSize">70dp</item>
+        <item name="android:actionBarSize">45dp</item>
     </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -15,11 +15,14 @@
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:background">?android:attr/listDivider</item>
+        <item name="android:background">#068C87</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
     </style>
     <!-- Mios -->
     <style name="titlebar_menu">
-        <item name="android:windowTitleBackgroundStyle">@android:color/white</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:layout_height">45dp</item>
     </style>
     <style name="titlebar_title">
         <item name="android:textColor">@android:color/darker_gray</item>
@@ -30,23 +33,32 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">@android:color/darker_gray</item>
     </style>
-    <style name="title_image">
-        <item name="android:layout_marginTop">1dp</item>
-        <item name="android:background">#00A9A2</item>
-    </style>
-    <style name="button">
+
+    <style name="input_text">
         <item name="android:background">@android:color/white</item>
         <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_gravity">start</item>
     </style>
-    <style name="regular_text">
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-    <style name="edit_text">
-        <item name="android:layout_gravity">center_horizontal</item>
+    <style name="button_style">
+        <item name="android:background">@android:color/white</item>
         <item name="android:textColor">@android:color/darker_gray</item>
-        <item name="android:background">@drawable/button_image</item>
-        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_gravity">center</item>
     </style>
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="text_style">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_gravity">start|bottom</item>
+        <item name="android:gravity">start|bottom</item>
+    </style>
+    <style name="aux_text_style">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
 </resources>

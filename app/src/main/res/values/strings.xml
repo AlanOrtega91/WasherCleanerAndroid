@@ -33,7 +33,7 @@
     <string name="information">INFORMACIÓN</string>
 
     <!-- Strings related to the Service -->
-    <string name="looking">Buscando servicios</string>
+    <string name="looking">BUSCANDO SERVICIOS</string>
     <string name="accept">ACEPTAR</string>
     <string name="start">INICIAR SERVICIO</string>
     <string name="time_remaining">TIEMPO RESTANTE: </string>
@@ -41,7 +41,7 @@
     <string name="canceled">CANCELADO</string>
     <string name="notify_canceled">El servicio fue cancelado</string>
     <!-- Strings related to Menu -->
-    <string name="menu_button">Menu</string>
+    <string name="menu_button">MENÚ</string>
     <string-array name="menu_options">
         <item name="account_information_title">SERVICIOS RECIENTES</item>
         <item name="products_title">PRODUCTOS</item>
@@ -79,10 +79,11 @@
     <string name="user_name">%1$s %2$s</string>
     <string name="no_location_service">Esta aplicacion no puede funcionar sin la ubicacion habilitada</string>
     <string name="init_date_string">0000/00/00 00:00 AM</string>
-    <string name="accepting">Aceptando...</string>
+    <string name="accepting">ACEPTANDO...</string>
     <string name="session_error">Error de sesion</string>
     <string name="image_description">Imagen Usuario</string>
-    <string name="account">Cuenta</string>
+    <string name="account">CUENTA</string>
+    <string name="x">X</string>
 
     <array name="products">
         <item>Eco</item>

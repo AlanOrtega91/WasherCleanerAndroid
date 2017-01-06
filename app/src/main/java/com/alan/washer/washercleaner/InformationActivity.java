@@ -35,12 +35,14 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         TextView serviceLabel = (TextView)findViewById(R.id.serviceLabel);
         TextView type = (TextView)findViewById(R.id.type);
         TextView brand = (TextView)findViewById(R.id.brand);
+        TextView address = (TextView)findViewById(R.id.address);
         serviceUserName.setText(activeService.clientName);
         serviceUserCel.setText(activeService.clientCel);
         plates.setText(activeService.plates);
         serviceLabel.setText(activeService.service);
         type.setText(activeService.type);
         brand.setText(activeService.brand);
+        address.setText(activeService.address);
     }
 
     private void initValues() {

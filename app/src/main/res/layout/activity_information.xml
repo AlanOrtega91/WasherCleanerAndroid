@@ -7,78 +7,85 @@
     tools:context="com.alan.washer.washercleaner.InformationActivity"
     android:background="@drawable/background">
 
-    <ImageView
+    <TextView
+        style="@style/aux_text_style"
         android:layout_width="25dp"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:src="@drawable/close"
+        android:text="@string/x"
+        android:textSize="30sp"
         android:contentDescription="@string/image_description"
         android:layout_margin="20dp"
         android:onClick="onClick"/>
 
     <TextView
-        style="@style/edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/text_style"
+        android:layout_width="fill_parent"
         android:text="@string/init_string"
         android:id="@+id/clientName"
-        android:gravity="center"
         android:layout_marginTop="50dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginRight="15dp"
+        android:textAlignment="center"/>
 
     <TextView
-        style="@style/edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/text_style"
+        android:layout_width="fill_parent"
         android:text="@string/init_string"
-        android:gravity="center"
         android:id="@+id/clientCel"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginRight="15dp"
+        android:textAlignment="center"/>
 
     <TextView
-        style="@style/edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/text_style"
+        android:layout_width="fill_parent"
         android:text="New Text"
-        android:gravity="center"
         android:id="@+id/plates"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginRight="15dp"
+        android:textAlignment="center"/>
 
     <TextView
-        style="@style/edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/text_style"
+        android:layout_width="fill_parent"
         android:text="New Text"
-        android:gravity="center"
         android:id="@+id/brand"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginRight="15dp"
+        android:textAlignment="center"/>
 
     <TextView
-        style="@style/edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/text_style"
+        android:layout_width="fill_parent"
         android:text="New Text"
-        android:gravity="center"
         android:id="@+id/serviceLabel"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginRight="15dp"
+        android:textAlignment="center"/>
 
     <TextView
-        style="@style/edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/text_style"
+        android:layout_width="fill_parent"
         android:text="New Text"
-        android:gravity="center"
         android:id="@+id/type"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginRight="15dp"
+        android:textAlignment="center"/>
+
+    <TextView
+        style="@style/text_style"
+        android:layout_width="fill_parent"
+        android:text="New Text"
+        android:id="@+id/address"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:textAlignment="center"/>
+
 </LinearLayout>

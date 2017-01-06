@@ -5,7 +5,7 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:id="@+id/traditional"
         android:layout_alignParentTop="true"
@@ -14,7 +14,7 @@
         android:contentDescription="@string/image_description"/>
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:id="@+id/eco"
         android:layout_alignParentTop="true"

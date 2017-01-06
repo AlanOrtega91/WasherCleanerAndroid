@@ -159,6 +159,6 @@ public class ProfileReader {
     public static class errorReadingProfile extends Exception {
     }
 
-    class errorReadingData extends Exception {
+    private class errorReadingData extends Exception {
     }
 }

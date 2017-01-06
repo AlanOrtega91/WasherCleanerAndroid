@@ -14,7 +14,7 @@
         android:gravity="center">
 
         <TextView
-            style="@style/regular_text"
+            style="@style/text_style"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:text="New Text"
@@ -27,7 +27,7 @@
             android:layout_marginRight="10dp" />
 
         <TextView
-            style="@style/regular_text"
+            style="@style/text_style"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="New Text"
@@ -42,7 +42,7 @@
 
 
         <Button
-            style="@style/button"
+            style="@style/button_style"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/summary_continue"
