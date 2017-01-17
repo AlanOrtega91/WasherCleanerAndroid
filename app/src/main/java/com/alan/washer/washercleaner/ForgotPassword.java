@@ -1,8 +1,6 @@
 package com.alan.washer.washercleaner;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 public class ForgotPassword extends AppCompatActivity implements View.OnClickListener{
 
     EditText bEmail;
-    Handler handler = new Handler(Looper.getMainLooper());;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

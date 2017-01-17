@@ -58,7 +58,8 @@ public class LoadingActivity extends AppCompatActivity {
             finish();
         } catch (User.noSessionFound e){
             if (!MainActivity.onScreen) postAlert(getString(R.string.session_error));
-            changeActivity(LoginActivity.class);
+            ProfileReader.delete(getBaseContext());
+            finish();
         }
     }
 
@@ -73,6 +74,7 @@ public class LoadingActivity extends AppCompatActivity {
 
     private void changeActivity(Class activity) {
         Intent intent = new Intent(getBaseContext(), activity);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }

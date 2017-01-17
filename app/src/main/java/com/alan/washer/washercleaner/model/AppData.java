@@ -13,7 +13,6 @@ public class AppData
     public static final String MESSAGE = "notificationMessage";
     public static final String FB_TOKEN = "firebase";
 
-    //TODO:implement gets
     public static void saveData(SharedPreferences settings, User user) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(TOKEN, user.token);
@@ -34,7 +33,7 @@ public class AppData
         editor.apply();
     }
 
-    public static void eliminateData(SharedPreferences settings) {
+    static void eliminateData(SharedPreferences settings) {
         SharedPreferences.Editor editor = settings.edit();
         editor.remove(TOKEN);
         editor.apply();

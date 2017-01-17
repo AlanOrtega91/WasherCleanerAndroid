@@ -10,10 +10,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
@@ -132,7 +132,7 @@ public class ProfileReader {
                 service.clientCel = jsonService.getString("telCliente");
                 service.estimatedTime = jsonService.getString("tiempoEstimado");
                 service.startedTime = jsonService.getString("fechaEmpezado");
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                 service.estimatedTime = jsonService.getString("tiempoEstimado");
                 if (!jsonService.isNull("horaFinalEstimada"))
                     service.finalTime = format.parse(jsonService.getString("horaFinalEstimada"));
@@ -140,7 +140,6 @@ public class ProfileReader {
                 service.plates = jsonService.getString("Placas");
                 service.brand = jsonService.getString("Marca");
                 service.color = jsonService.getString("Color");
-                service.type = jsonService.getString("Tipo");
                 services.add(service);
             }
         }catch (Exception e){

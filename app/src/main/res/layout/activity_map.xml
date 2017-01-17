@@ -42,12 +42,13 @@
                         android:onClick="onClickTravel"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
-                        android:layout_weight="0.21" />
+                        android:layout_weight="0.21"
+                        android:contentDescription="@string/image_description"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="NAVEGA"
+                        android:text="@string/travel"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>
@@ -73,7 +74,7 @@
                 android:id="@+id/map"
                 class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 tools:context=".MapActivity"
                 android:layout_weight="1.00" />
 

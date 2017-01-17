@@ -34,7 +34,6 @@ public class Service
     public String plates;
     public String brand;
     public String color;
-    public String type;
 
     public static final int STARTED = 4;
     public static final int FINISHED = 5;
@@ -97,7 +96,6 @@ public class Service
             service.plates = jsonService.getString("Placas");
             service.brand = jsonService.getString("Marca");
             service.color = jsonService.getString("Color");
-            service.type = jsonService.getString("Tipo");
             return service;
         } catch (JSONException e) {
             Log.i("ERROR","JSON ERROR");

@@ -18,7 +18,7 @@ import com.alan.washer.washercleaner.model.AppData;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     EditText bEmail;
     EditText bPassword;
-    private Handler handler = new Handler(Looper.getMainLooper());;
+    private Handler handler = new Handler(Looper.getMainLooper());
     SharedPreferences settings;
     public static final String EMAIL = "EMAIL";
     public static final String PASSWORD = "PASSWORD";

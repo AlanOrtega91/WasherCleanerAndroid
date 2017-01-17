@@ -89,7 +89,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
      * Map
      */
     private final static int INTERVAL_IN_MILISECONDS = 100;
-    private GoogleMap map;
     TextView locationText;
     Marker locationMarker;
     Marker serviceMarker;
@@ -109,8 +108,9 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     List<Service> services = new ArrayList<>();
     String token;
     Thread activeServiceCycleThread;
-    public static AppCompatActivity instance;
     Boolean changingStatus = false;
+
+    Boolean noSessionFound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,13 +122,12 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         startService(firebaseIntent);
         initView();
         initLocation();
-        initThreads();
-        instance = this;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        initThreads();
         initValues();
         readUserImage();
         readUserRating();
@@ -179,8 +178,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         TextView headerTitle = (TextView) findViewById(R.id.menuTitle);
         ImageView headerImage = (ImageView) findViewById(R.id.cleanerImage);
         headerTitle.setText(getString(R.string.user_name,user.name,user.lastName));
-        //TODO: REvisa esto
-        //headerTitle.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(getBaseContext(),R.drawable.line_white), null, ContextCompat.getDrawable(getBaseContext(),R.drawable.line_white));
         if (user.imagePath != null && !user.imagePath.equals("")) {
             headerImage.setImageBitmap(User.readImageBitmapFromFile(user.imagePath));
         }
@@ -190,6 +187,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     protected void onPause() {
         Log.i("PAUSED","App paused");
         AppData.saveInBackground(settings,true);
+        cancelTimers();
         super.onPause();
     }
 
@@ -348,7 +346,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 });
             }
         } else {
-            changeActivity(SummaryActivity.class);
+            changeActivity(SummaryActivity.class, false);
         }
         AppData.deleteMessage(settings);
     }
@@ -370,7 +368,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         ListView menuList = (ListView)findViewById(R.id.menuList);
         View header = getLayoutInflater().inflate(R.layout.menu_header,menuList,false);
         menuList.addHeaderView(header);
-        //TODO: make header full width
         String[] titles = getResources().getStringArray(R.array.menu_options);
         Collections.addAll(navigationItems, titles);
         listItems.add(Pair.create(titles[0], ContextCompat.getDrawable(getBaseContext(),R.drawable.history_icon)));
@@ -497,8 +494,11 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         } catch (User.errorUpdatingLocation e) {
             Log.i("LOCATION","Error updating Location");
         } catch (User.noSessionFound e){
-            if (!MainActivity.onScreen && settings.getString(AppData.TOKEN,null) != null) postAlert(getString(R.string.session_error));
-            changeActivity(MainActivity.class);
+            if (!noSessionFound) {
+                noSessionFound = true;
+                postAlert(getString(R.string.session_error));
+                changeActivity(MainActivity.class, true);
+            }
             finish();
         }
     }
@@ -547,7 +547,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     if (changingStatus)
                         return;
                     changingStatus = true;
-                    //TODO:implement fast change with db
                     Service.changeServiceStatus(activeService.id, String.valueOf(status), token);
                     changingStatus = false;
                     List<Service> services = new DataBase(getBaseContext()).readServices();
@@ -555,7 +554,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                         if (services.get(i).id.equals(activeService.id)) {
                             services.get(i).status = statusString;
                             if (statusString.equals("Started")) {
-                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                                 Date currenTime = new Date();
                                 services.get(i).startedTime = format.format(currenTime.getTime());
                                 Calendar date = Calendar.getInstance();
@@ -573,8 +572,11 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     postAlert("Error changing status");
                     changingStatus = false;
                 }  catch (Service.noSessionFound e){
-                    if (!MainActivity.onScreen && settings.getString(AppData.TOKEN,null) != null) postAlert(getString(R.string.session_error));
-                    changeActivity(MainActivity.class);
+                    if (!noSessionFound) {
+                        noSessionFound = true;
+                        postAlert(getString(R.string.session_error));
+                        changeActivity(MainActivity.class, true);
+                    }
                     finish();
                 }
             }
@@ -596,22 +598,14 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     private void cancelService(){
         try{
             Service.cancelService(activeService.id,token);
-//            List<Service> services = new DataBase(getBaseContext()).readServices();
-//            for (int i = 0; i<services.size();i++){
-//                if (services.get(i).id.equals(activeService.id)) {
-//                    services.get(i).status = "Canceled";
-//                    services.remove(i);
-//                }
-//            }
-//            new DataBase(getBaseContext()).saveServices(services);
-//            AppData.saveIdService(settings,null);
-//            AppData.saveMessage(settings,"Canceled");
-//            AppData.notifyNewData(settings,true);
         } catch (Service.errorCancelingRequest e){
             postAlert("Error canceling request");
         } catch (Service.noSessionFound e){
-            if (!MainActivity.onScreen && settings.getString(AppData.TOKEN,null) != null) postAlert(getString(R.string.session_error));
-            changeActivity(MainActivity.class);
+            if (!noSessionFound) {
+                noSessionFound = true;
+                postAlert(getString(R.string.session_error));
+                changeActivity(MainActivity.class, true);
+            }
             finish();
         }
     }
@@ -634,8 +628,11 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     } catch (Service.errorServiceTaken e) {
                         Log.i("Service","Error accepting service");
                     } catch (Service.noSessionFound e){
-                        if (!MainActivity.onScreen && settings.getString(AppData.TOKEN,null) != null) postAlert(getString(R.string.session_error));
-                        changeActivity(MainActivity.class);
+                        if (!noSessionFound) {
+                            noSessionFound = true;
+                            postAlert(getString(R.string.session_error));
+                            changeActivity(MainActivity.class, true);
+                        }
                         finish();
                     }
                 }
@@ -654,15 +651,18 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 int servicesAmount = services.size();
                 services = Service.getServices(currentLocation.latitude, currentLocation.longitude, token);
                 if (servicesAmount == 0 && services.size() != 0) {
-                    //TODO: check for double noti
-                    if (settings.getBoolean(AppData.IN_BACKGROUND, false))
+                    if (settings.getBoolean(AppData.IN_BACKGROUND, false)) {
                         AlarmNotification.notify(getBaseContext(), getString(R.string.services_found), MapActivity.class);
+                    }
                 }
             } catch (Service.errorGettingServices e) {
                 Log.i("SERVICE", "Error getting nearby requests try again later");
             } catch (Service.noSessionFound e){
-                if (!MainActivity.onScreen && settings.getString(AppData.TOKEN,null) != null) postAlert(getString(R.string.session_error));
-                changeActivity(MainActivity.class);
+                if (!noSessionFound) {
+                    noSessionFound = true;
+                    postAlert(getString(R.string.session_error));
+                    changeActivity(MainActivity.class, true);
+                }
                 finish();
             }
         }
@@ -689,8 +689,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             final String city = addresses.get(0).getLocality();
             final String state = addresses.get(0).getAdminArea();
             final String country = addresses.get(0).getCountryName();
-            final String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
             final String suburb = addresses.get(0).getSubLocality();
             handler.post(new Runnable() {
                 @Override
@@ -717,6 +715,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onMapReady(GoogleMap googleMap) {
         try {
+            GoogleMap map;
             BitmapDrawable cleanerDrawable = (BitmapDrawable) ContextCompat.getDrawable(getBaseContext(),R.drawable.washer_bike);
             Bitmap b = cleanerDrawable.getBitmap();
             Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 60, 60, false);
@@ -744,16 +743,17 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             createAlert(getString(R.string.no_location_service));
         } catch (SecurityException e) {
             createAlert(getString(R.string.no_location_service));
+            Log.i("Error","Security");
         }
     }
 
     private void decideFragment(int position) {
         switch (position){
             case HISTORY:
-                changeActivity(HistoryActivity.class);
+                changeActivity(HistoryActivity.class,false);
                 return;
             case PRODUCTS:
-                changeActivity(ProductsActivity.class);
+                changeActivity(ProductsActivity.class,false);
                 return;
             case LOGOUT:
                 Thread sendLogOutThread = new Thread(new Runnable() {
@@ -776,9 +776,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             Intent firebaseIntent = new Intent(getBaseContext(),FirebaseMessagingService.class);
             stopService(serviceIntent);
             stopService(firebaseIntent);
-            MapActivity.instance.finish();
             MainActivity.onScreen = true;
-            changeActivity(MainActivity.class);
+            changeActivity(MainActivity.class, true);
             user.sendLogout();
             finish();
         } catch (User.errorWithLogOut e) {
@@ -787,21 +786,18 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private class MenuAdapter extends ArrayAdapter<Pair<String,Drawable>> {
-        public MenuAdapter()
-        {
-            super(MapActivity.this,R.layout.menu_item,R.id.listItemName,listItems);
-        }
+        MenuAdapter() { super(MapActivity.this,R.layout.menu_item,R.id.listItemName,listItems); }
 
         @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView,@NonNull ViewGroup parent) {
             View itemView = convertView;
             if (itemView == null) {
                 itemView = getLayoutInflater().inflate(R.layout.menu_item, parent, false);
             }
             try {
                 Pair<String,Drawable> item = listItems.get(position);
-                Drawable icon = item.second;;
+                Drawable icon = item.second;
                 TextView itemName = (TextView)itemView.findViewById(R.id.listItemName);
                 ImageView itemImage = (ImageView)itemView.findViewById(R.id.listItemImage);
                 if (position < navigationItems.size() - 1) {
@@ -840,13 +836,16 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     drawerLayout.openDrawer(GravityCompat.START);
                 break;
             case R.id.rightButtonOptionsTitlebar:
-                changeActivity(InformationActivity.class);
+                changeActivity(InformationActivity.class,false);
                 break;
         }
     }
 
-    private void changeActivity(Class activity) {
+    private void changeActivity(Class activity, Boolean clear) {
         Intent intent = new Intent(getBaseContext(), activity);
+        if (clear) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
         startActivity(intent);
     }
 

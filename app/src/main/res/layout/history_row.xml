@@ -8,7 +8,7 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text="@string/init_date_string"
         android:id="@+id/serviceDate"
         android:layout_weight="0"
@@ -16,7 +16,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginBottom="10dp"
         android:textColor="@android:color/darker_gray"
-        android:layout_marginLeft="5dp" />
+        android:layout_marginStart="5dp" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tipo de Servicio"
+            android:text="@string/init_type_service"
             android:id="@+id/serviceType"
             android:layout_gravity="center"
             android:textAlignment="center"
@@ -38,7 +38,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$00"
+            android:text="@string/init_price"
             android:id="@+id/servicePrice"
             android:layout_gravity="center"
             android:textAlignment="center"

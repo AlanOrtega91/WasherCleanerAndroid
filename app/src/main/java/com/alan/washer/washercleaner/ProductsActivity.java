@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +29,6 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
     private Handler handler;
     SharedPreferences settings;
     String token;
-    String idUser;
     List<Product> products;
     GridView productsGrid;
 
@@ -44,15 +44,10 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
     private void initValues() {
         settings = getSharedPreferences(AppData.FILE, 0);
         token = settings.getString(AppData.TOKEN,null);
-        idUser = settings.getString(AppData.IDCLIENTE,null);
     }
 
     private void initView() {
         productsGrid = (GridView) findViewById(R.id.productsGrid);
-        TextView idDisplay = (TextView)findViewById(R.id.idDisplay);
-        if (idDisplay != null) {
-            idDisplay.setText("ID = " + idUser);
-        }
         configureActionBar();
     }
 
@@ -103,8 +98,7 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
             postAlert("Error leyendo información de productos");
         } catch (Product.noSessionFound e){
             postAlert(getString(R.string.session_error));
-            MapActivity.instance.finish();
-            changeActivity(MainActivity.class);
+            changeActivity(MainActivity.class,true);
             finish();
         }
     }
@@ -123,16 +117,16 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private class ProductsAdapter extends ArrayAdapter<Product> {
-        public ProductsAdapter()
+        ProductsAdapter()
         {
             super(ProductsActivity.this,R.layout.product_row,products);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             View itemView = convertView;
             if (itemView == null) {
-                itemView = getLayoutInflater().inflate(R.layout.product_row, null);
+                itemView = getLayoutInflater().inflate(R.layout.product_row, parent, false);
             }
             try {
                 Product product = products.get(position);
@@ -141,7 +135,7 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
                 ImageView image = (ImageView)itemView.findViewById(R.id.productImage);
                 ImageView eco = (ImageView)itemView.findViewById(R.id.eco);
                 ImageView traditional = (ImageView)itemView.findViewById(R.id.traditional);
-                amount.setText(product.cantidad + "%");
+                amount.setText(getString(R.string.percentage,product.cantidad));
                 name.setText(product.name);
                 image.setImageDrawable(checkForImage(product.id,eco,traditional));
                 return itemView;
@@ -195,8 +189,11 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void changeActivity(Class activity) {
+    private void changeActivity(Class activity, Boolean clear) {
         Intent intent = new Intent(getBaseContext(), activity);
+        if (clear) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
         startActivity(intent);
     }
 

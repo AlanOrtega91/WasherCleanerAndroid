@@ -2,8 +2,7 @@ package com.alan.washer.washercleaner;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,7 +23,6 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
 
     SharedPreferences settings;
     String idClient;
-    Handler handler = new Handler(Looper.getMainLooper());;
     List<Service> services = new ArrayList<>();
     ListView historyList;
 
@@ -83,16 +81,16 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private class HistoryAdapter extends ArrayAdapter<Service> {
-        public HistoryAdapter()
+        HistoryAdapter()
         {
             super(HistoryActivity.this,R.layout.history_row,services);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull public View getView(int position, View convertView,@NonNull ViewGroup parent ) {
             View itemView = convertView;
             if (itemView == null) {
-                itemView = getLayoutInflater().inflate(R.layout.history_row, null);
+                itemView = getLayoutInflater().inflate(R.layout.history_row, parent, false);
             }
             try {
                 Service service = services.get(position);

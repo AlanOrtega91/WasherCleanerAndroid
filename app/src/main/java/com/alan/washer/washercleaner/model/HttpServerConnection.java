@@ -3,26 +3,22 @@ package com.alan.washer.washercleaner.model;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.NameValuePair;
-import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.config.RequestConfig;
 import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
-import cz.msebera.android.httpclient.impl.client.HttpClients;
 
 
 class HttpServerConnection
 {
     static String buildURL(String location) {
-        return "http://washer.mx/Vashen/API/" + location + "/";
+        return "http://washer.mx/Washer/API/" + location + "/";
     }
 
     static String sendHttpRequestPost(String urlPath, List<NameValuePair> params) throws connectionException {

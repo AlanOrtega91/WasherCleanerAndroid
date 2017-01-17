@@ -1,18 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alan.washer.washercleaner">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:largeHeap="true">
+        android:fullBackupContent="false">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -35,8 +37,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ForgotPassword"
             android:screenOrientation="portrait" />
@@ -51,23 +53,44 @@
             android:screenOrientation="portrait" />
         <activity android:name=".LoadingActivity" />
 
-        <service android:name=".FirebaseMessagingService">
+        <service android:name=".FirebaseMessagingService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
                 <action android:name="com.alan.washer.washercleaner.LONGRUNSERVICE" />
             </intent-filter>
         </service>
-        <service android:name=".FirebaseInstanceIDService">
+        <service android:name=".FirebaseInstanceIDService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".LocationServiceInfinite"
+        <service
+            android:name=".LocationServiceInfinite"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.alan.washer.washercleaner.LONGRUNSERVICE" />
             </intent-filter>
         </service>
+
+        <activity android:name=".DeepLinking">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
+                <data android:scheme="http"
+                    android:host="www.washer.mx"
+                    android:pathPrefix="/service" />
+                <!-- note that the leading "/" is required for pathPrefix-->
+                <!-- Accepts URIs that begin with "example://gizmos” -->
+                <data android:scheme="washer"
+                    android:host="washer" />
+
+            </intent-filter>
+        </activity>
     </application>
+
 </manifest>

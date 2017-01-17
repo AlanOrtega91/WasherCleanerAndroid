@@ -72,16 +72,6 @@
         style="@style/text_style"
         android:layout_width="fill_parent"
         android:text="New Text"
-        android:id="@+id/type"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:textAlignment="center"/>
-
-    <TextView
-        style="@style/text_style"
-        android:layout_width="fill_parent"
-        android:text="New Text"
         android:id="@+id/address"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="15dp"

@@ -33,19 +33,22 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 User user = new DataBase(getBaseContext()).readUser();
                 user.rating = Double.valueOf(rating);
                 new DataBase(getBaseContext()).saveUser(user);
-                if (inBackground)
+                if (inBackground) {
                     AlarmNotification.notify(getBaseContext(), message, InitActivity.class);
+                }
                 break;
             case "6":
                 message = getString(R.string.notify_canceled);
-                if (inBackground)
+                if (inBackground) {
                     AlarmNotification.notify(getBaseContext(), message, InitActivity.class);
-                else
+                }
+                else {
                     sendPopUp(message);
+                }
                 String serviceJson = remoteMessage.getData().get("serviceInfo");
-                if (serviceJson == null)
-                    return;
-                deleteService(serviceJson);
+                if (serviceJson != null) {
+                    deleteService(serviceJson);
+                }
                 break;
         }
     }
@@ -56,10 +59,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             List<Service> services = db.readServices();
             int i;
             JSONObject jsonService = new JSONObject(serviceJson);
-            for (i = 0; i < services.size() ; i++)
-            {
-                if (services.get(i).id.equals(jsonService.getString("id")))
+            for (i = 0; i < services.size() ; i++) {
+                if (services.get(i).id.equals(jsonService.getString("id"))) {
                     break;
+                }
             }
             services.remove(i);
             db.saveServices(services);

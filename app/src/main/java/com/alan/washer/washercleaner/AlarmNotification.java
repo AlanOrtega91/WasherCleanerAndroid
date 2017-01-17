@@ -13,7 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
-public class AlarmNotification {
+class AlarmNotification {
 
     private static final String NOTIFICATION_TAG = "Alarm";
 

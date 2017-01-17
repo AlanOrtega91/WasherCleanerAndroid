@@ -10,16 +10,16 @@ import android.provider.BaseColumns;
 import com.alan.washer.washercleaner.model.Service;
 import com.alan.washer.washercleaner.model.User;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DataBase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Gilton.db";
     private static final int DATABASE_VERSION = 1;
-            ;
+
     private static final String TEXT_TYPE = " TEXT";
     private static final String DECIMAL_TYPE = " DECIMAL(1,1)";
     private static final String PRIMARY_KEY = " INTEGER PRIMARY KEY";
@@ -53,7 +53,6 @@ public class DataBase extends SQLiteOpenHelper {
                     ServiceEntry.PLATES + TEXT_TYPE + COMMA_SEP +
                     ServiceEntry.BRAND + TEXT_TYPE + COMMA_SEP +
                     ServiceEntry.COLOR + TEXT_TYPE + COMMA_SEP +
-                    ServiceEntry.TYPE + TEXT_TYPE + COMMA_SEP +
                     ServiceEntry.ADDRESS + TEXT_TYPE + COMMA_SEP +
                     ServiceEntry.ESTIMATED_TIME + TEXT_TYPE +
                     " )";
@@ -82,32 +81,32 @@ public class DataBase extends SQLiteOpenHelper {
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        onUpgrade(db,oldVersion,newVersion);
+        onUpgrade(db, oldVersion, newVersion);
     }
 
-    public void deleteTableUser(){
+    public void deleteTableUser() {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(UserEntry.TABLE_NAME,null,null);
+        db.delete(UserEntry.TABLE_NAME, null, null);
     }
 
-    public void saveUser(User user){
+    public void saveUser(User user) {
         SQLiteDatabase db = getWritableDatabase();
         deleteTableUser();
         ContentValues row = new ContentValues();
-        row.put(UserEntry.ID,user.id);
-        row.put(UserEntry.NAME,user.name);
-        row.put(UserEntry.LAST_NAME,user.lastName);
-        row.put(UserEntry.MAIL,user.email);
-        row.put(UserEntry.PHONE,user.phone);
-        row.put(UserEntry.RATING,user.rating);
-        row.put(UserEntry.IMAGE,user.imagePath);
-        db.insert(UserEntry.TABLE_NAME,null,row);
+        row.put(UserEntry.ID, user.id);
+        row.put(UserEntry.NAME, user.name);
+        row.put(UserEntry.LAST_NAME, user.lastName);
+        row.put(UserEntry.MAIL, user.email);
+        row.put(UserEntry.PHONE, user.phone);
+        row.put(UserEntry.RATING, user.rating);
+        row.put(UserEntry.IMAGE, user.imagePath);
+        db.insert(UserEntry.TABLE_NAME, null, row);
         db.close();
     }
 
-    public User readUser(){
+    public User readUser() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = configureQuery(db, UserEntry.TABLE_NAME,null,null,null);
+        Cursor cursor = configureQuery(db, UserEntry.TABLE_NAME, null, null, null);
 
         cursor.moveToFirst();
         User user = new User();
@@ -136,44 +135,44 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public void deleteTableService(){
+    public void deleteTableService() {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(ServiceEntry.TABLE_NAME,null,null);
+        db.delete(ServiceEntry.TABLE_NAME, null, null);
     }
 
-    public void saveServices(List<Service> services){
+    public void saveServices(List<Service> services) {
         SQLiteDatabase db = getWritableDatabase();
         deleteTableService();
-        for (Service service:services) {
+        for (Service service : services) {
             ContentValues row = new ContentValues();
-            row.put(ServiceEntry.ID,service.id);
-            row.put(ServiceEntry.CAR,service.car);
-            row.put(ServiceEntry.SERVICE,service.service);
-            row.put(ServiceEntry.PRICE,service.price);
-            row.put(ServiceEntry.DESCRIPTION,service.description);
-            row.put(ServiceEntry.STARTED_DATE,service.startedTime);
-            row.put(ServiceEntry.LATITUD,service.latitud);
-            row.put(ServiceEntry.LONGITUD,service.longitud);
-            row.put(ServiceEntry.STATUS,service.status);
-            row.put(ServiceEntry.CLIENT_NAME,service.clientName);
-            row.put(ServiceEntry.CLIENT_CEL,service.clientCel);
-            row.put(ServiceEntry.ESTIMATED_TIME,service.estimatedTime);
-            row.put(ServiceEntry.PLATES,service.plates);
-            row.put(ServiceEntry.BRAND,service.brand);
-            row.put(ServiceEntry.COLOR,service.color);
-            row.put(ServiceEntry.TYPE,service.type);
-            row.put(ServiceEntry.ADDRESS,service.address);
+            row.put(ServiceEntry.ID, service.id);
+            row.put(ServiceEntry.CAR, service.car);
+            row.put(ServiceEntry.SERVICE, service.service);
+            row.put(ServiceEntry.PRICE, service.price);
+            row.put(ServiceEntry.DESCRIPTION, service.description);
+            row.put(ServiceEntry.STARTED_DATE, service.startedTime);
+            row.put(ServiceEntry.LATITUD, service.latitud);
+            row.put(ServiceEntry.LONGITUD, service.longitud);
+            row.put(ServiceEntry.STATUS, service.status);
+            row.put(ServiceEntry.CLIENT_NAME, service.clientName);
+            row.put(ServiceEntry.CLIENT_CEL, service.clientCel);
+            row.put(ServiceEntry.ESTIMATED_TIME, service.estimatedTime);
+            row.put(ServiceEntry.PLATES, service.plates);
+            row.put(ServiceEntry.BRAND, service.brand);
+            row.put(ServiceEntry.COLOR, service.color);
+            row.put(ServiceEntry.ADDRESS, service.address);
 
             if (service.finalTime != null) {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                 row.put(ServiceEntry.FINAL_TIME, format.format(service.finalTime));
             }
-            db.insert(ServiceEntry.TABLE_NAME,null,row);
+            db.insert(ServiceEntry.TABLE_NAME, null, row);
         }
         db.close();
     }
 
-    public List<Service> readServices(){
+    public List<Service> readServices() {
         SQLiteDatabase db = getReadableDatabase();
         String sortOrder = ServiceEntry.STARTED_DATE + DESC;
         Cursor cursor = configureQuery(db, ServiceEntry.TABLE_NAME, null, null, sortOrder);
@@ -196,10 +195,9 @@ public class DataBase extends SQLiteOpenHelper {
                 service.plates = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.PLATES));
                 service.brand = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.BRAND));
                 service.color = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.COLOR));
-                service.type = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.TYPE));
                 service.address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ADDRESS));
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss");
                 try {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                     service.finalTime = format.parse(cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.FINAL_TIME)));
                 } catch (Exception e) {
                     service.finalTime = null;
@@ -212,7 +210,7 @@ public class DataBase extends SQLiteOpenHelper {
         return services;
     }
 
-    public Service getActiveService(){
+    public Service getActiveService() {
         SQLiteDatabase db = getReadableDatabase();
         String whereClause = ServiceEntry.STATUS + " != ?" + AND + ServiceEntry.STATUS + " != ?";
         String[] whereArgs = {
@@ -244,10 +242,9 @@ public class DataBase extends SQLiteOpenHelper {
                 service.plates = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.PLATES));
                 service.brand = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.BRAND));
                 service.color = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.COLOR));
-                service.type = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.TYPE));
                 service.address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ADDRESS));
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                     service.finalTime = format.parse(cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.FINAL_TIME)));
                 } catch (Exception e) {
                     service.finalTime = null;
@@ -260,7 +257,7 @@ public class DataBase extends SQLiteOpenHelper {
         return service;
     }
 
-    public List<Service> getFinishedServices(){
+    public List<Service> getFinishedServices() {
         SQLiteDatabase db = getReadableDatabase();
         String whereClause = ServiceEntry.STATUS + " == ?";
         String[] whereArgs = {
@@ -291,11 +288,9 @@ public class DataBase extends SQLiteOpenHelper {
                 service.plates = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.PLATES));
                 service.brand = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.BRAND));
                 service.color = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.COLOR));
-                service.type = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.TYPE));
                 service.address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ADDRESS));
-
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                     service.finalTime = format.parse(cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.FINAL_TIME)));
                 } catch (Exception e) {
                     service.finalTime = null;
@@ -309,36 +304,35 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    public static abstract class UserEntry implements BaseColumns {
-        public static final String TABLE_NAME = "User";
-        public static final String ID = "id";
-        public static final String NAME = "name";
-        public static final String LAST_NAME = "lastName";
-        public static final String MAIL = "email";
-        public static final String PHONE = "phone";
-        public static final String IMAGE = "image";
-        public static final String RATING = "rating";
+    static abstract class UserEntry implements BaseColumns {
+        static final String TABLE_NAME = "User";
+        static final String ID = "id";
+        static final String NAME = "name";
+        static final String LAST_NAME = "lastName";
+        static final String MAIL = "email";
+        static final String PHONE = "phone";
+        static final String IMAGE = "image";
+        static final String RATING = "rating";
     }
 
-    public static abstract class ServiceEntry implements BaseColumns {
-        public static final String TABLE_NAME = "Service";
-        public static final String ID = "id";
-        public static final String CAR = "car";
-        public static final String SERVICE = "service";
-        public static final String PRICE = "price";
-        public static final String DESCRIPTION = "description";
-        public static final String STARTED_DATE = "startedDate";
-        public static final String LATITUD = "latitud";
-        public static final String LONGITUD = "longitud";
-        public static final String STATUS = "status";
-        public static final String FINAL_TIME = "finalTime";
-        public static final String CLIENT_NAME = "clientName";
-        public static final String CLIENT_CEL = "clientCel";
-        public static final String ESTIMATED_TIME = "estimatedTime";
-        public static final String PLATES = "plates";
-        public static final String BRAND = "brand";
-        public static final String COLOR = "color";
-        public static final String TYPE = "type";
-        public static final String ADDRESS = "address";
+    static abstract class ServiceEntry implements BaseColumns {
+        static final String TABLE_NAME = "Service";
+        static final String ID = "id";
+        static final String CAR = "car";
+        static final String SERVICE = "service";
+        static final String PRICE = "price";
+        static final String DESCRIPTION = "description";
+        static final String STARTED_DATE = "startedDate";
+        static final String LATITUD = "latitud";
+        static final String LONGITUD = "longitud";
+        static final String STATUS = "status";
+        static final String FINAL_TIME = "finalTime";
+        static final String CLIENT_NAME = "clientName";
+        static final String CLIENT_CEL = "clientCel";
+        static final String ESTIMATED_TIME = "estimatedTime";
+        static final String PLATES = "plates";
+        static final String BRAND = "brand";
+        static final String COLOR = "color";
+        static final String ADDRESS = "address";
     }
 }

@@ -64,6 +64,7 @@ public class LocationServiceInfinite extends Service {
         try {
             if (location != null) {
                 User.updateLocation(settings.getString(AppData.TOKEN, null), location.getLatitude(), location.getLongitude());
+                Log.i("Location:"," Updated");
             }
         } catch (User.errorUpdatingLocation e) {
             Log.i("LOCATION","Error updating Location");

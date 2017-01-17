@@ -3,8 +3,6 @@ package com.alan.washer.washercleaner;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -19,7 +17,6 @@ public class SummaryActivity extends AppCompatActivity {
 
     SharedPreferences settings;
     Service activeService;
-    Handler handler = new Handler(Looper.getMainLooper());
 
     TextView date;
     TextView price;

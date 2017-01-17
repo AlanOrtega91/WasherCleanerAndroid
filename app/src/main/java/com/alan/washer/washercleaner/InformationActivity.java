@@ -2,7 +2,6 @@ package com.alan.washer.washercleaner;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -16,8 +15,6 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
 
     Service activeService;
     SharedPreferences settings;
-    Handler handler;
-    Service service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +30,12 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         TextView serviceUserCel = (TextView)findViewById(R.id.clientCel);
         TextView plates = (TextView)findViewById(R.id.plates);
         TextView serviceLabel = (TextView)findViewById(R.id.serviceLabel);
-        TextView type = (TextView)findViewById(R.id.type);
         TextView brand = (TextView)findViewById(R.id.brand);
         TextView address = (TextView)findViewById(R.id.address);
         serviceUserName.setText(activeService.clientName);
         serviceUserCel.setText(activeService.clientCel);
         plates.setText(activeService.plates);
         serviceLabel.setText(activeService.service);
-        type.setText(activeService.type);
         brand.setText(activeService.brand);
         address.setText(activeService.address);
     }
