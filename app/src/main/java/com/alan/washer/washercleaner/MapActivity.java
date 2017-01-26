@@ -722,7 +722,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             map = googleMap;
             //Change to false to delete location icon
             map.setMyLocationEnabled(true);
-            map.getUiSettings().setMyLocationButtonEnabled(true);
+            //map.getUiSettings().setMyLocationButtonEnabled(true);
             map.setTrafficEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
             map.getUiSettings().setZoomGesturesEnabled(true);

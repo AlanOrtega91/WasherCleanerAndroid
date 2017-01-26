@@ -29,6 +29,7 @@ public class LocationServiceInfinite extends Service {
     LocationManager locationManager;
     SharedPreferences settings;
     List<com.alan.washer.washercleaner.model.Service> services = new ArrayList<>();
+    Boolean skipUpdate = false;
 
     @Nullable
     @Override
@@ -62,9 +63,18 @@ public class LocationServiceInfinite extends Service {
 
     private void updateCleanerLocation(Location location) {
         try {
+            com.alan.washer.washercleaner.model.Service activeService = new DataBase(getBaseContext()).getActiveService();
             if (location != null) {
+                if (activeService != null && activeService.status.equals("Started")) {
+                    if (skipUpdate) {
+                        skipUpdate = false;
+                        return;
+                    } else {
+                        skipUpdate = true;
+                    }
+                }
                 User.updateLocation(settings.getString(AppData.TOKEN, null), location.getLatitude(), location.getLongitude());
-                Log.i("Location:"," Updated");
+                Log.i("Location"," lat= " + location.getLatitude() + " long= " + location.getLongitude());
             }
         } catch (User.errorUpdatingLocation e) {
             Log.i("LOCATION","Error updating Location");
