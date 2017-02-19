@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.alan.washer.washercleaner.HistoryActivity"
+    tools:context=".HistoryActivity"
     android:background="#F2F2F2">
 
     <ListView

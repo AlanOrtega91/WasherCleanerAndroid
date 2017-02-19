@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Washer Lavador</string>
     <string name="app_name_display">WASHER</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDo0Q6H4n991pIl794d5q9zfxiUgi8sxcA</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBRop6_RztxsuXASY-CftdFtMwAuFbG2Q4</string>
     <string name="title_activity_login">INICIAR SESION</string>
     <string name="init_string">-</string>
     <string name="back">ATRAS</string>

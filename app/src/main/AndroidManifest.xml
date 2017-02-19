@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.alan.washer.washercleaner">
+    package="com.washermx.washercleaner">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -19,7 +19,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".InitActivity">
+        <activity android:name="com.washermx.washercleaner.InitActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,55 +27,55 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="com.washermx.washercleaner.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MapActivity"
+            android:name="com.washermx.washercleaner.MapActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ProductsActivity"
+            android:name="com.washermx.washercleaner.ProductsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.washermx.washercleaner.MainActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ForgotPassword"
+            android:name="com.washermx.washercleaner.ForgotPassword"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SummaryActivity"
+            android:name="com.washermx.washercleaner.SummaryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".HistoryActivity"
+            android:name="com.washermx.washercleaner.HistoryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".InformationActivity"
+            android:name="com.washermx.washercleaner.InformationActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".LoadingActivity" />
+        <activity android:name="com.washermx.washercleaner.LoadingActivity" />
 
-        <service android:name=".FirebaseMessagingService"
+        <service android:name="com.washermx.washercleaner.FirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
-                <action android:name="com.alan.washer.washercleaner.LONGRUNSERVICE" />
+                <action android:name="com.washer.washercleaner.LONGRUNSERVICE" />
             </intent-filter>
         </service>
-        <service android:name=".FirebaseInstanceIDService"
+        <service android:name="com.washermx.washercleaner.FirebaseInstanceIDService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".LocationServiceInfinite"
+            android:name="com.washermx.washercleaner.LocationServiceInfinite"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.alan.washer.washercleaner.LONGRUNSERVICE" />
+                <action android:name="com.washer.washercleaner.LONGRUNSERVICE" />
             </intent-filter>
         </service>
 
-        <activity android:name=".DeepLinking">
+        <activity android:name="com.washermx.washercleaner.DeepLinking">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
