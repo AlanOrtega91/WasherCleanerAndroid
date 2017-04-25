@@ -97,7 +97,7 @@ public class InitActivity extends AppCompatActivity {
 
     private void createAlertTerms() {
         new AlertDialog.Builder(this)
-                .setMessage("Al utilizar esta aplicacion aceptas los terminos y condiciones de uso en la pagina http://www.washerm.mx")
+                .setMessage(getString(R.string.terms_alert))
                 .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
