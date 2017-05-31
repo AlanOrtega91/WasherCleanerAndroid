@@ -569,7 +569,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     AppData.saveIdService(settings,activeService.id);
                     AppData.notifyNewData(settings,true);
                 } catch (Service.errorChangingStatusRequest e) {
-                    postAlert("Error changing status");
+                    postAlert("Error cambiando estado");
                     changingStatus = false;
                 }  catch (Service.noSessionFound e){
                     if (!noSessionFound) {
