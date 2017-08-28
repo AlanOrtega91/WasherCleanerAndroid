@@ -80,6 +80,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     Handler handler = new Handler(Looper.getMainLooper());
     TextView statusDisplay;
+    TextView acceptDisplay;
     TextView cancelDisplay;
     LatLng currentLocation = new LatLng(0, 0);
     LinearLayout informationLayout;
@@ -112,6 +113,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     Boolean noSessionFound = false;
 
+    Boolean faltan5Min = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -280,17 +282,47 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void configureStateLooking(){
-        serviceMarker.setVisible(false);
-        informationLayout.setVisibility(View.GONE);
-        rightButton.setVisibility(View.INVISIBLE);
-        if (services.size() > 0) {
-            statusDisplay.setEnabled(true);
-            statusDisplay.setText(getString(R.string.accept));
-            cancelDisplay.setVisibility(View.GONE);
+        if (activeService != null) {
+            serviceMarker.setVisible(true);
+            rightButton.setVisibility(View.VISIBLE);
+            if (services.size() > 0) {
+                if (faltan5Min) {
+                    DataBase db = new DataBase(getBaseContext());
+                    if (db.getActiveServices().size() < 2) {
+                        statusDisplay.setEnabled(true);
+                        statusDisplay.setVisibility(View.VISIBLE);
+                        acceptDisplay.setVisibility(View.VISIBLE);
+                        acceptDisplay.setEnabled(true);
+                        acceptDisplay.setText(getString(R.string.accept));
+                    } else {
+                        statusDisplay.setEnabled(true);
+                        statusDisplay.setVisibility(View.VISIBLE);
+                        acceptDisplay.setVisibility(View.GONE);
+                    }
+                } else {
+                    statusDisplay.setEnabled(true);
+                    statusDisplay.setVisibility(View.VISIBLE);
+                    acceptDisplay.setVisibility(View.GONE);
+                }
+
+            } else {
+                statusDisplay.setEnabled(true);
+                statusDisplay.setVisibility(View.VISIBLE);
+                acceptDisplay.setVisibility(View.GONE);
+            }
         } else {
-            statusDisplay.setEnabled(false);
-            statusDisplay.setText(getString(R.string.looking));
+            serviceMarker.setVisible(false);
+            rightButton.setVisibility(View.INVISIBLE);
+            acceptDisplay.setVisibility(View.VISIBLE);
             cancelDisplay.setVisibility(View.GONE);
+            statusDisplay.setVisibility(View.GONE);
+            if (services.size() > 0) {
+                acceptDisplay.setEnabled(true);
+                acceptDisplay.setText(getString(R.string.accept));
+            } else {
+                acceptDisplay.setEnabled(false);
+                acceptDisplay.setText(getString(R.string.looking));
+            }
         }
     }
 
@@ -358,6 +390,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         mapFragment.getMapAsync(this);
         locationText = (TextView) findViewById(R.id.locationText);
         statusDisplay = (TextView) findViewById(R.id.statusDisplay);
+        acceptDisplay = (TextView) findViewById(R.id.acceptDisplay);
         cancelDisplay = (TextView) findViewById(R.id.cancelDisplay);
         informationLayout = (LinearLayout) findViewById(R.id.informationLayout);
         if (informationLayout != null) informationLayout.setVisibility(View.GONE);
@@ -424,13 +457,11 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void run() {
                 updateCleanerLocation();
-                if (activeService == null)
-                    findRequestsNearby();
+                findRequestsNearby();
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (activeService == null)
-                            configureStateLooking();
+                        configureStateLooking();
                     }
                 });
             }
@@ -530,12 +561,14 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
 
     public void onClickChangeStatus(View view) {
-        if (activeService == null)
-            tryAcceptService();
-        else if (activeService.status.equals("Accepted"))
+        if (activeService.status.equals("Accepted"))
             changeServiceStatus(Service.STARTED,"Started","EMPEZANDO...");
         else if (activeService.status.equals("Started"))
             changeServiceStatus(Service.FINISHED,"Finished","TERMINANDO...");
+    }
+
+    public void onClickAccept(View view) {
+        tryAcceptService();
     }
 
     private void changeServiceStatus(final int status, final String statusString, String statusMessage) {
@@ -624,6 +657,17 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                         AppData.saveIdService(settings,acceptedService.id);
                         AppData.notifyNewData(settings,true);
                         startActiveServiceCycle();
+                        if (acceptedService.metodoDePago.equals("e"))
+                        {
+                            handler.post(
+                                    new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            createAlert(getString(R.string.pagoEfectivo));
+                                        }
+                                    }
+                            );
+                        }
                         return;
                     } catch (Service.errorServiceTaken e) {
                         Log.i("Service","Error accepting service");
@@ -646,14 +690,15 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         if (token == null){
             return;
         }
+        //TODO: Agregar el cambio para poder aceptar 5 min antes de terminar
         if (activeService == null) {
             try {
+                //TODO: tres
+                faltan5Min = false;
                 int servicesAmount = services.size();
                 services = Service.getServices(currentLocation.latitude, currentLocation.longitude, token);
                 if (servicesAmount == 0 && services.size() != 0) {
-                    if (settings.getBoolean(AppData.IN_BACKGROUND, false)) {
-                        AlarmNotification.notify(getBaseContext(), getString(R.string.services_found), MapActivity.class);
-                    }
+                    AlarmNotification.notify(getBaseContext(), getString(R.string.services_found), MapActivity.class);
                 }
             } catch (Service.errorGettingServices e) {
                 Log.i("SERVICE", "Error getting nearby requests try again later");
@@ -665,6 +710,9 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 }
                 finish();
             }
+        } else if (activeService.finalTime != null && ((int)Service.getDifferenceTimeInMillis(activeService.finalTime)/1000/60 + 1) < 5){
+            faltan5Min = true;
+            //TODO: dos
         }
     }
 
@@ -813,9 +861,10 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void createAlert(String title) {
+    private void createAlert(String title)
+    {
         new AlertDialog.Builder(this)
-                .setTitle(title)
+                .setMessage(title)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -887,7 +936,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 Uri.parse("http://maps.google.com/maps?daddr=" + activeService.latitud + "," + activeService.longitud));
         startActivity(intent);
     }
-    static class errorReadingLocation extends Throwable {
+    private class errorReadingLocation extends Throwable {
     }
 }
 

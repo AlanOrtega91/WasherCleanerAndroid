@@ -17,7 +17,7 @@ import java.util.Locale;
 
 public class DataBase extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "Gilton.db";
+    private static final String DATABASE_NAME = "Washer.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String TEXT_TYPE = " TEXT";
@@ -54,6 +54,7 @@ public class DataBase extends SQLiteOpenHelper {
                     ServiceEntry.BRAND + TEXT_TYPE + COMMA_SEP +
                     ServiceEntry.COLOR + TEXT_TYPE + COMMA_SEP +
                     ServiceEntry.ADDRESS + TEXT_TYPE + COMMA_SEP +
+                    ServiceEntry.METODO_PAGO + TEXT_TYPE + COMMA_SEP +
                     ServiceEntry.ESTIMATED_TIME + TEXT_TYPE +
                     " )";
 
@@ -161,6 +162,7 @@ public class DataBase extends SQLiteOpenHelper {
             row.put(ServiceEntry.BRAND, service.brand);
             row.put(ServiceEntry.COLOR, service.color);
             row.put(ServiceEntry.ADDRESS, service.address);
+            row.put(ServiceEntry.METODO_PAGO, service.metodoDePago);
 
             if (service.finalTime != null) {
                 //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -196,6 +198,7 @@ public class DataBase extends SQLiteOpenHelper {
                 service.brand = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.BRAND));
                 service.color = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.COLOR));
                 service.address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ADDRESS));
+                service.metodoDePago = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.METODO_PAGO));
                 try {
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                     service.finalTime = format.parse(cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.FINAL_TIME)));
@@ -243,6 +246,7 @@ public class DataBase extends SQLiteOpenHelper {
                 service.brand = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.BRAND));
                 service.color = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.COLOR));
                 service.address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ADDRESS));
+                service.metodoDePago = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.METODO_PAGO));
                 try {
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                     service.finalTime = format.parse(cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.FINAL_TIME)));
@@ -255,6 +259,50 @@ public class DataBase extends SQLiteOpenHelper {
         db.close();
         cursor.close();
         return service;
+    }
+
+    public List<Service> getActiveServices() {
+        SQLiteDatabase db = getReadableDatabase();
+        String whereClause = ServiceEntry.STATUS + " != ?" + AND + ServiceEntry.STATUS + " != ?";
+        String[] whereArgs = {
+                "Canceled",
+                "Finished"
+        };
+        String sortOrder = ServiceEntry.ID + DESC;
+        Cursor cursor = configureQuery(db, ServiceEntry.TABLE_NAME, whereClause, whereArgs, sortOrder);
+        List<Service> services = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                Service service = new Service();
+                service.id = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ID));
+                service.car = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.CAR));
+                service.service = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.SERVICE));
+                service.price = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.PRICE));
+                service.description = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.DESCRIPTION));
+                service.startedTime = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.STARTED_DATE));
+                service.latitud = cursor.getDouble(cursor.getColumnIndexOrThrow(ServiceEntry.LATITUD));
+                service.longitud = cursor.getDouble(cursor.getColumnIndexOrThrow(ServiceEntry.LONGITUD));
+                service.status = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.STATUS));
+                service.clientName = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.CLIENT_NAME));
+                service.clientCel = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.CLIENT_CEL));
+                service.estimatedTime = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ESTIMATED_TIME));
+                service.plates = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.PLATES));
+                service.brand = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.BRAND));
+                service.color = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.COLOR));
+                service.address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ADDRESS));
+                service.metodoDePago = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.METODO_PAGO));
+                try {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                    service.finalTime = format.parse(cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.FINAL_TIME)));
+                } catch (Exception e) {
+                    service.finalTime = null;
+                }
+                services.add(service);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        cursor.close();
+        return services;
     }
 
     public List<Service> getFinishedServices() {
@@ -289,6 +337,7 @@ public class DataBase extends SQLiteOpenHelper {
                 service.brand = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.BRAND));
                 service.color = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.COLOR));
                 service.address = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.ADDRESS));
+                service.metodoDePago = cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.METODO_PAGO));
                 try {
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
                     service.finalTime = format.parse(cursor.getString(cursor.getColumnIndexOrThrow(ServiceEntry.FINAL_TIME)));
@@ -334,5 +383,6 @@ public class DataBase extends SQLiteOpenHelper {
         static final String BRAND = "brand";
         static final String COLOR = "color";
         static final String ADDRESS = "address";
+        static final String METODO_PAGO = "metodoDePago";
     }
 }

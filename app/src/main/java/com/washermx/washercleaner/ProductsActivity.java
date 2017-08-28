@@ -135,7 +135,7 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
                 ImageView image = (ImageView)itemView.findViewById(R.id.productImage);
                 ImageView eco = (ImageView)itemView.findViewById(R.id.eco);
                 ImageView traditional = (ImageView)itemView.findViewById(R.id.traditional);
-                amount.setText(getString(R.string.percentage,product.cantidad));
+                amount.setText(getString(R.string.percentage,Float.parseFloat(product.cantidad)/100));
                 name.setText(product.name);
                 image.setImageDrawable(checkForImage(product.id,eco,traditional));
                 return itemView;

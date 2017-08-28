@@ -48,16 +48,15 @@ public class ProfileReader {
         try {
             String jsonResponse = HttpServerConnection.sendHttpRequestPost(url,params);
             JSONObject response = new JSONObject(jsonResponse);
-            if (!(response.getString("Status").compareTo("OK") == 0))
+            if (response.getString("estado").compareTo("ok") != 0) {
                 throw new errorReadingData();
-
-            double rating;
-            if (response.isNull("Calificacion"))
-                rating = 0;
-            else
-                rating = response.getDouble("Calificacion");
-            readUser(response.getJSONObject("User Info"),rating, context);
-            readHistory(response.getJSONArray("History"));
+            }
+            double rating = 0;
+            if (!response.isNull("calificacion")) {
+                rating = response.getDouble("calificacion");
+            }
+            readUser(response.getJSONObject("lavador"),rating, context);
+            readHistory(response.getJSONArray("historial"));
         } catch (Throwable e) {
             throw new errorReadingData();
         }
@@ -86,15 +85,16 @@ public class ProfileReader {
         try {
             String jsonResponse = HttpServerConnection.sendHttpRequestPost(url,params);
             JSONObject response = new JSONObject(jsonResponse);
-            if (!(response.getString("Status").compareTo("OK") == 0))
+            if (response.getString("estado").compareTo("ok") != 0) {
                 throw new errorReadingData();
-            double rating;
-            if (response.isNull("Calificacion"))
-                rating = 0;
-            else
-                rating = response.getDouble("Calificacion");
-            readUser(response.getJSONObject("User Info"),rating, context);
-            readHistory(response.getJSONArray("History"));
+            }
+
+            double rating = 0;
+            if (!response.isNull("calificacion")) {
+                rating = response.getDouble("calificacion");
+            }
+            readUser(response.getJSONObject("lavador"),rating, context);
+            readHistory(response.getJSONArray("historial"));
         } catch (Throwable e) {
             throw new errorReadingData();
         }
@@ -140,6 +140,9 @@ public class ProfileReader {
                 service.plates = jsonService.getString("Placas");
                 service.brand = jsonService.getString("Marca");
                 service.color = jsonService.getString("Color");
+                if (!jsonService.isNull("metodoDePago")) {
+                    service.metodoDePago = jsonService.getString("metodoDePago");
+                }
                 services.add(service);
             }
         }catch (Exception e){

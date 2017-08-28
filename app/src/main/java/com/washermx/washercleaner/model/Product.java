@@ -26,12 +26,16 @@ public class Product {
         try {
             String jsonResponse = HttpServerConnection.sendHttpRequestPost(url,params);
             JSONObject response = new JSONObject(jsonResponse);
-            if ((response.getString("Status").compareTo("SESSION ERROR") == 0))
-                throw new noSessionFound();
-            if (!(response.getString("Status").compareTo("OK") == 0))
-                throw new errorGettingProducts();
+            if (response.getString("estado").compareTo("ok") != 0)
+            {
+                if (response.getString("clave").compareTo("sesion") == 0) {
+                    throw new noSessionFound();
+                } else {
+                    throw new errorGettingProducts();
+                }
+            }
 
-            JSONArray servicesResponse = response.getJSONArray("Products");
+            JSONArray servicesResponse = response.getJSONArray("productos");
             for (int i=0;i < servicesResponse.length(); i++) {
                 JSONObject jsonService = servicesResponse.getJSONObject(i);
                 Product product = new Product();

@@ -17,7 +17,7 @@ import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
 
 class HttpServerConnection
 {
-    private static String VERSION = "1.0.0";
+    private static String VERSION = "1.1.0";
     private static String BASE = "http://54.218.50.2/api/" + VERSION + "/interfaz";
 
     static String buildURL(String location) {

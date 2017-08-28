@@ -37,7 +37,7 @@ public class Service
 
     public static final int STARTED = 4;
     public static final int FINISHED = 5;
-
+    public String metodoDePago;
 
 
     public static long getDifferenceTimeInMillis(Date finalTime) {
@@ -54,10 +54,14 @@ public class Service
         try {
             String jsonResponse = HttpServerConnection.sendHttpRequestPost(url,params);
             JSONObject response = new JSONObject(jsonResponse);
-            if ((response.getString("Status").compareTo("SESSION ERROR") == 0))
-                throw new noSessionFound();
-            if (!(response.getString("Status").compareTo("OK") == 0))
-                throw new errorChangingStatusRequest();
+            if (response.getString("estado").compareTo("ok") != 0)
+            {
+                if (response.getString("clave").compareTo("sesion") == 0) {
+                    throw new noSessionFound();
+                } else {
+                    throw new errorChangingStatusRequest();
+                }
+            }
 
         } catch (JSONException e) {
             Log.i("ERROR","JSON ERROR");
@@ -75,12 +79,16 @@ public class Service
         try {
             String jsonResponse = HttpServerConnection.sendHttpRequestPost(url,params);
             JSONObject response = new JSONObject(jsonResponse);
-            if ((response.getString("Status").compareTo("SESSION ERROR") == 0))
-                throw new noSessionFound();
-            if (!(response.getString("Status").compareTo("OK") == 0))
-                throw new errorServiceTaken();
+            if (response.getString("estado").compareTo("ok") != 0)
+            {
+                if (response.getString("clave").compareTo("sesion") == 0) {
+                    throw new noSessionFound();
+                } else {
+                    throw new errorServiceTaken();
+                }
+            }
 
-            JSONObject jsonService = response.getJSONObject("service info");
+            JSONObject jsonService = response.getJSONObject("servicio");
             Service service = new Service();
             service.id = jsonService.getString("id");
             service.car = jsonService.getString("coche");
@@ -96,6 +104,7 @@ public class Service
             service.plates = jsonService.getString("Placas");
             service.brand = jsonService.getString("Marca");
             service.color = jsonService.getString("Color");
+            service.metodoDePago = jsonService.getString("pago");
             return service;
         } catch (JSONException e) {
             Log.i("ERROR","JSON ERROR");
@@ -115,12 +124,16 @@ public class Service
         try {
             String jsonResponse = HttpServerConnection.sendHttpRequestPost(url,params);
             JSONObject response = new JSONObject(jsonResponse);
-            if ((response.getString("Status").compareTo("SESSION ERROR") == 0))
-                throw new noSessionFound();
-            if (!(response.getString("Status").compareTo("OK") == 0))
-                throw new errorGettingServices();
+            if (response.getString("estado").compareTo("ok") != 0)
+            {
+                if (response.getString("clave").compareTo("sesion") == 0) {
+                    throw new noSessionFound();
+                } else {
+                    throw new errorGettingServices();
+                }
+            }
 
-            JSONArray servicesResponse = response.getJSONArray("services");
+            JSONArray servicesResponse = response.getJSONArray("servicios");
             for (int i=0;i < servicesResponse.length(); i++) {
                 JSONObject jsonService = servicesResponse.getJSONObject(i);
                 Service service = new Service();
@@ -148,10 +161,14 @@ public class Service
         try {
             String jsonResponse = HttpServerConnection.sendHttpRequestPost(url,params);
             JSONObject response = new JSONObject(jsonResponse);
-            if ((response.getString("Status").compareTo("SESSION ERROR") == 0))
-                throw new noSessionFound();
-            if (!(response.getString("Status").compareTo("OK") == 0))
-                throw new errorCancelingRequest();
+            if (response.getString("estado").compareTo("ok") != 0)
+            {
+                if (response.getString("clave").compareTo("sesion") == 0) {
+                    throw new noSessionFound();
+                } else {
+                    throw new errorCancelingRequest();
+                }
+            }
 
         } catch (JSONException e) {
             Log.i("ERROR","JSON ERROR");
@@ -167,10 +184,8 @@ public class Service
     }
     public static class errorGettingServices extends Exception {
     }
-
     public static class errorServiceTaken extends Exception {
     }
-
     public static class errorChangingStatusRequest extends Exception {
     }
 }
