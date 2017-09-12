@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -21,7 +23,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class LocationServiceInfinite extends Service {
+public class LocationServiceInfinite extends Service implements LocationListener {
 
     private static final int INTERVAL_IN_MILISECONDS = 1000;
     Timer findRequestsNearbyTimer = new Timer();
@@ -29,7 +31,6 @@ public class LocationServiceInfinite extends Service {
     LocationManager locationManager;
     SharedPreferences settings;
     List<com.washermx.washercleaner.model.Service> services = new ArrayList<>();
-    Boolean skipUpdate = false;
 
     @Nullable
     @Override
@@ -39,21 +40,18 @@ public class LocationServiceInfinite extends Service {
 
     @Override
     public void onCreate() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        configuraUbicacion();
         settings = getSharedPreferences(AppData.FILE, 0);
         findRequestsNearbyTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                try {
-                    updateCleanerLocation(getBestKnownLocation());
-                    if (new DataBase(getBaseContext()).getActiveService() == null)
-                        findRequestsNearby();
-                } catch (errorReadingLocation e){
-                    Log.i("LOCATION","Error updating Location security");
+                updateCleanerLocation();
+                if (new DataBase(getBaseContext()).getActiveService() == null)
+                {
+                    findRequestsNearby();
                 }
-
             }
-        }, 0, INTERVAL_IN_MILISECONDS * 5);
+        }, 0, INTERVAL_IN_MILISECONDS/10);
     }
 
     @Override
@@ -61,49 +59,24 @@ public class LocationServiceInfinite extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void updateCleanerLocation(Location location) {
+    private Boolean configuraUbicacion() {
         try {
-            com.washermx.washercleaner.model.Service activeService = new DataBase(getBaseContext()).getActiveService();
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER,INTERVAL_IN_MILISECONDS/10,1,this);
+            return true;
+        } catch (SecurityException e) {
+            return false;
+        }
+    }
+    private void updateCleanerLocation() {
+        try {
             if (location != null) {
-                if (activeService != null && activeService.status.equals("Started")) {
-                    if (skipUpdate) {
-                        skipUpdate = false;
-                        return;
-                    } else {
-                        skipUpdate = true;
-                    }
-                }
                 User.updateLocation(settings.getString(AppData.TOKEN, null), location.getLatitude(), location.getLongitude());
-                Log.i("Location"," lat= " + location.getLatitude() + " long= " + location.getLongitude());
             }
         } catch (User.errorUpdatingLocation e) {
             Log.i("LOCATION","Error updating Location");
         } catch (User.noSessionFound e){
             Log.i("LOCATION","Error with Session");
-        }
-    }
-
-    private Location getBestKnownLocation () throws errorReadingLocation {
-        try {
-            if (( location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)) != null) {
-                long locationTime = (SystemClock.elapsedRealtimeNanos() - location.getElapsedRealtimeNanos()) * 1000 * 1000;
-                if (locationTime > 30 && locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) != null) {
-                    return locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                } else {
-                    throw new errorReadingLocation();
-                }
-            } else if (( location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)) != null){
-                long locationTime = (SystemClock.elapsedRealtimeNanos() - location.getElapsedRealtimeNanos()) * 1000 * 1000;
-                if (locationTime > 30 && locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER) != null) {
-                    return locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-                } else {
-                    throw new errorReadingLocation();
-                }
-            } else {
-                throw new errorReadingLocation();
-            }
-        } catch (SecurityException e) {
-            throw new errorReadingLocation();
         }
     }
 
@@ -124,6 +97,27 @@ public class LocationServiceInfinite extends Service {
             }
         }
     }
-    static class errorReadingLocation extends Throwable {
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.location = location;
+        long tiempo = SystemClock.elapsedRealtimeNanos() - this.location.getElapsedRealtimeNanos();
+        Log.i("Ubicacion","Lat=" + this.location.getLatitude() + "   Lon=" + this.location.getLongitude() + "   Tiempo=" + tiempo/1000/1000/1000/60/60 + "h "+ tiempo/1000/1000/1000/60 + "m "+ tiempo/1000/1000/1000 + "s " + tiempo/1000/1000 + "M " + tiempo/1000 + "u ");
     }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
+
 }

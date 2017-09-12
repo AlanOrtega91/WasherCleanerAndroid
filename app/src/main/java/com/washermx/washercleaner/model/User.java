@@ -112,7 +112,8 @@ public class User {
 
     static Bitmap getEncodedStringImageForUser(String id) {
         try {
-            URL url = new URL("http://54.218.50.2/api/1.0.0/images/cleaners/" + id + "/profile_image.jpg");
+            //TODO: ver porque no lee
+            URL url = new URL("http://54.218.50.2/api/imagenes/lavadores/" + id + "/profile_image.jpg");
             InputStream is = url.openStream();
             BufferedInputStream bis = new BufferedInputStream(is);
             Bitmap bm = BitmapFactory.decodeStream(bis);
