@@ -15,8 +15,8 @@ android {
         applicationId "com.washermx.washercleaner"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 9
-        versionName "1.4.0.1"
+        versionCode 10
+        versionName "1.4.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
