@@ -569,7 +569,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                                     new Runnable() {
                                         @Override
                                         public void run() {
-                                            createAlert(getString(R.string.pagoEfectivo));
+                                            Service servicioActivo = new DataBase(getBaseContext()).getActiveService();
+                                            createAlert(getString(R.string.pagoEfectivo,servicioActivo.precioAPagar));
                                         }
                                     }
                             );

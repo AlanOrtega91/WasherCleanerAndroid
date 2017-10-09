@@ -38,6 +38,7 @@ public class Service
     public static final int STARTED = 4;
     public static final int FINISHED = 5;
     public String metodoDePago;
+    public String precioAPagar;
 
 
     public static long getDifferenceTimeInMillis(Date finalTime) {
@@ -105,6 +106,7 @@ public class Service
             service.brand = jsonService.getString("Marca");
             service.color = jsonService.getString("Color");
             service.metodoDePago = jsonService.getString("pago");
+            service.precioAPagar = jsonService.getString("precioAPagar");
             return service;
         } catch (JSONException e) {
             Log.i("ERROR","JSON ERROR");

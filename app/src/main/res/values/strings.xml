@@ -89,7 +89,7 @@
     <string name="init_price">$00</string>
     <string name="init_type_service">Tipo de Servicio</string>
     <string name="terms_alert">Al utilizar esta aplicacion aceptas los terminos y condiciones de uso en la pagina http://www.washer.mx</string>
-    <string name="pagoEfectivo">Se solicito pagar en efectivo, deberas cobrar antes de iniciar el servicio</string>
+    <string name="pagoEfectivo">Se solicito pagar en efectivo, deberas cobrar antes de iniciar el servicio.\nEl precio a cobrar es de %s</string>
 
     <array name="products">
         <item>Eco</item>
