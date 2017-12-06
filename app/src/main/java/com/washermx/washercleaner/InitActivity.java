@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,7 +15,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.view.Gravity;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.washermx.washercleaner.model.AppData;
@@ -23,12 +27,11 @@ import com.washermx.washercleaner.model.ProfileReader;
 import com.washermx.washercleaner.model.User;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.washermx.washercleaner.model.Versiones;
 
 public class InitActivity extends AppCompatActivity {
 
     SharedPreferences settings;
-    private Handler handler = new Handler(Looper.getMainLooper());
-    String token;
 
     private static final int ACCESS_FINE_LOCATION = 1;
     private static final int INTERNET = 2;
@@ -41,14 +44,9 @@ public class InitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_init);
         FirebaseMessaging.getInstance().subscribeToTopic("test");
         FirebaseInstanceId.getInstance().getToken();
-        initValues();
+        settings = getSharedPreferences(AppData.FILE,0);
         initView();
         reviewPermissions();
-    }
-
-    private void initValues() {
-        settings = getSharedPreferences(AppData.FILE,0);
-        token = settings.getString(AppData.TOKEN,null);
     }
 
     private void reviewPermissions() {
@@ -62,13 +60,9 @@ public class InitActivity extends AppCompatActivity {
             createAlertTerms();
         } else {
             allPermissionsOk = true;
-            Thread sendDecideNextView = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    decideNextView();
-                }
-            });
-            sendDecideNextView.start();
+            settings = getSharedPreferences(AppData.FILE, 0);
+            String token = settings.getString(AppData.TOKEN, null);
+            new Iniciar().execute(token);
         }
     }
 
@@ -111,51 +105,21 @@ public class InitActivity extends AppCompatActivity {
     private void initView() {
         ActionBar optionsTitleBar = getSupportActionBar();
         if (optionsTitleBar != null) optionsTitleBar.hide();
-
     }
 
-    private void decideNextView() {
-        if (token == null)
-            changeActivity(MainActivity.class);
-        else {
-            tryReadUser(token);
-        }
-    }
-
-    private void tryReadUser(final String token) {
-        Thread tryReadUserThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                User user;
-                try {
-                    ProfileReader.run(getBaseContext());
-                    DataBase db = new DataBase(getBaseContext());
-                    user = db.readUser();
-                    user.token = token;
-                    AppData.saveData(settings,user);
-                    String fireBaseToken = settings.getString(AppData.FB_TOKEN,"");
-                    user.saveFirebaseToken(token, fireBaseToken);
-                    changeActivity(MapActivity.class);
-                } catch (ProfileReader.errorReadingProfile e){
-                    Log.i("PROFILE","Session not found");
-                    ProfileReader.delete(getBaseContext());
-                    changeActivity(MainActivity.class);
-                } catch (User.errorSavingFireBaseToken e) {
-                    e.printStackTrace();
-                    ProfileReader.delete(getBaseContext());
-                    changeActivity(MainActivity.class);
-                } catch (User.noSessionFound e){
-                    if (!MainActivity.onScreen)  postAlert(getString(R.string.session_error));
-                    changeActivity(MainActivity.class);
-                }
-            }
-        });
-        tryReadUserThread.start();
+    private void leerUsuario(String token) throws ProfileReader.errorReadingProfile, User.noSessionFound, User.errorSavingFireBaseToken {
+        ProfileReader.run(getBaseContext());
+        DataBase db = new DataBase(getBaseContext());
+        User user = db.readUser();
+        user.token = token;
+        AppData.saveData(settings,user);
+        String fireBaseToken = settings.getString(AppData.FB_TOKEN,"");
+        user.saveFirebaseToken(token, fireBaseToken);
     }
 
     private void postAlert(final String message)
     {
-        handler.post(new Runnable() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
@@ -167,5 +131,66 @@ public class InitActivity extends AppCompatActivity {
         Intent intent = new Intent(getBaseContext(),activity);
         startActivity(intent);
         finish();
+    }
+
+    void mostrarNuevaActualizacion() {
+        TextView tv  = new TextView(this);
+        tv.setMovementMethod(LinkMovementMethod.getInstance());
+        tv.setGravity(Gravity.CENTER);
+        tv.setText(Html.fromHtml("<a href=https://play.google.com/store/apps/details?id=com.washermx.washercleaner>" + getString(R.string.mensaje_nueva_version) +"</a>"));
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.actualizar_titulo))
+                .setView(tv)
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .show();
+    }
+
+    private class Iniciar extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... valores) {
+            String token = valores[0];
+            try {
+                Versiones.leerVersion();
+                if (token == null) {
+                    return "token";
+                } else {
+                    leerUsuario(token);
+                    return "ok";
+                }
+            } catch (Versiones.actualizacionRequerida e) {
+                return "version";
+            } catch (User.errorSavingFireBaseToken | User.noSessionFound | ProfileReader.errorReadingProfile e) {
+                return "error";
+            }
+        }
+
+        // Se ejecuta despues de doInBackground en el thread principal
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            switch (result) {
+                case "ok":
+                    changeActivity(MapActivity.class);
+                    break;
+                case "error":
+                    postAlert(getString(R.string.error_sesion));
+                    ProfileReader.delete(getBaseContext());
+                    changeActivity(MainActivity.class);
+                    break;
+                case "token":
+                    changeActivity(MainActivity.class);
+                    break;
+                case "version":
+                    mostrarNuevaActualizacion();
+                    break;
+            }
+        }
     }
 }

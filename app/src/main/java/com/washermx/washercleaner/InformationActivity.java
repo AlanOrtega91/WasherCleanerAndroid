@@ -26,12 +26,12 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
 
 
     private void fillData() {
-        TextView serviceUserName = (TextView)findViewById(R.id.clientName);
-        TextView serviceUserCel = (TextView)findViewById(R.id.clientCel);
-        TextView plates = (TextView)findViewById(R.id.plates);
-        TextView serviceLabel = (TextView)findViewById(R.id.serviceLabel);
-        TextView brand = (TextView)findViewById(R.id.brand);
-        TextView address = (TextView)findViewById(R.id.address);
+        TextView serviceUserName = findViewById(R.id.clientName);
+        TextView serviceUserCel = findViewById(R.id.clientCel);
+        TextView plates = findViewById(R.id.plates);
+        TextView serviceLabel = findViewById(R.id.serviceLabel);
+        TextView brand = findViewById(R.id.brand);
+        TextView address = findViewById(R.id.address);
         serviceUserName.setText(activeService.clientName);
         serviceUserCel.setText(activeService.clientCel);
         plates.setText(activeService.plates);

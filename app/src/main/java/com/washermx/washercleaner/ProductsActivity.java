@@ -47,7 +47,7 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initView() {
-        productsGrid = (GridView) findViewById(R.id.productsGrid);
+        productsGrid =  findViewById(R.id.productsGrid);
         configureActionBar();
     }
 
@@ -63,8 +63,8 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
             Toolbar parent =(Toolbar) optionsTitleBar.getCustomView().getParent();
             parent.setContentInsetsAbsolute(0,0);
         }
-        TextView menuButton = (TextView)findViewById(R.id.menuButton);
-        TextView menuTitle = (TextView)findViewById(R.id.menuTitle);
+        TextView menuButton = findViewById(R.id.menuButton);
+        TextView menuTitle = findViewById(R.id.menuTitle);
         if (menuTitle != null) {
             menuTitle.setText(R.string.products_title);
         }
@@ -97,8 +97,8 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
         } catch (Product.errorGettingProducts e) {
             postAlert("Error leyendo información de productos");
         } catch (Product.noSessionFound e){
-            postAlert(getString(R.string.session_error));
-            changeActivity(MainActivity.class,true);
+            postAlert(getString(R.string.error_sesion));
+            changeActivity(MainActivity.class);
             finish();
         }
     }
@@ -130,11 +130,11 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
             }
             try {
                 Product product = products.get(position);
-                TextView amount = (TextView)itemView.findViewById(R.id.amount);
-                TextView name = (TextView)itemView.findViewById(R.id.name);
-                ImageView image = (ImageView)itemView.findViewById(R.id.productImage);
-                ImageView eco = (ImageView)itemView.findViewById(R.id.eco);
-                ImageView traditional = (ImageView)itemView.findViewById(R.id.traditional);
+                TextView amount = itemView.findViewById(R.id.amount);
+                TextView name = itemView.findViewById(R.id.name);
+                ImageView image = itemView.findViewById(R.id.productImage);
+                ImageView eco = itemView.findViewById(R.id.eco);
+                ImageView traditional = itemView.findViewById(R.id.traditional);
                 amount.setText(getString(R.string.percentage,Float.parseFloat(product.cantidad)/100));
                 name.setText(product.name);
                 image.setImageDrawable(checkForImage(product.id,eco,traditional));
@@ -189,11 +189,9 @@ public class ProductsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void changeActivity(Class activity, Boolean clear) {
+    private void changeActivity(Class activity) {
         Intent intent = new Intent(getBaseContext(), activity);
-        if (clear) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

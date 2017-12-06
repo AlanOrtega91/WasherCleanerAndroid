@@ -31,8 +31,8 @@ public class SummaryActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        date = (TextView) findViewById(R.id.date);
-        price = (TextView) findViewById(R.id.price);
+        date =  findViewById(R.id.date);
+        price =  findViewById(R.id.price);
         configureView();
     }
 

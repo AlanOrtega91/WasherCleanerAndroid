@@ -42,7 +42,7 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initView() {
-        historyList = (ListView)findViewById(R.id.historyList);
+        historyList = findViewById(R.id.historyList);
         configureActionBar();
         populateListView();
     }
@@ -63,8 +63,8 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
             Toolbar parent =(Toolbar) optionsTitleBar.getCustomView().getParent();
             parent.setContentInsetsAbsolute(0,0);
         }
-        TextView menuButton = (TextView)findViewById(R.id.menuButton);
-        TextView menuTitle = (TextView)findViewById(R.id.menuTitle);
+        TextView menuButton = findViewById(R.id.menuButton);
+        TextView menuTitle = findViewById(R.id.menuTitle);
         menuTitle.setText(R.string.history);
         menuButton.setText(R.string.menu_button);
         menuButton.setOnClickListener(this);
@@ -94,9 +94,9 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
             }
             try {
                 Service service = services.get(position);
-                TextView date = (TextView)itemView.findViewById(R.id.serviceDate);
-                TextView price = (TextView)itemView.findViewById(R.id.servicePrice);
-                TextView type = (TextView)itemView.findViewById(R.id.serviceType);
+                TextView date = itemView.findViewById(R.id.serviceDate);
+                TextView price = itemView.findViewById(R.id.servicePrice);
+                TextView type = itemView.findViewById(R.id.serviceType);
                 date.setText(service.startedTime);
                 price.setText(getString(R.string.price,service.price));
                 type.setText(service.service);

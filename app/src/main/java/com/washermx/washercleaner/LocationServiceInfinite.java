@@ -59,13 +59,14 @@ public class LocationServiceInfinite extends Service implements LocationListener
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private Boolean configuraUbicacion() {
+    private void configuraUbicacion() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER,INTERVAL_IN_MILISECONDS/10,1,this);
-            return true;
-        } catch (SecurityException e) {
-            return false;
+            if (locationManager != null) {
+                locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER,INTERVAL_IN_MILISECONDS/10,1,this);
+            }
+        } catch (SecurityException ignored) {
+
         }
     }
     private void updateCleanerLocation() {

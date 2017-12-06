@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -149,7 +148,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     private void readUserRating() {
         int rating = (int) Math.round(user.rating);
-        ImageView image = (ImageView) findViewById(R.id.ratingImage);
+        ImageView image = findViewById(R.id.ratingImage);
         if (image == null) {
             return;
         }
@@ -179,8 +178,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void readUserImage() {
-        TextView headerTitle = (TextView) findViewById(R.id.menuTitle);
-        ImageView headerImage = (ImageView) findViewById(R.id.cleanerImage);
+        TextView headerTitle =  findViewById(R.id.menuTitle);
+        ImageView headerImage =  findViewById(R.id.cleanerImage);
         headerTitle.setText(getString(R.string.user_name, user.name, user.lastName));
         if (user.imagePath != null && !user.imagePath.equals("")) {
             headerImage.setImageBitmap(User.readImageBitmapFromFile(user.imagePath));
@@ -391,17 +390,17 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         configureActionBar();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        locationText = (TextView) findViewById(R.id.locationText);
-        statusDisplay = (TextView) findViewById(R.id.statusDisplay);
-        acceptDisplay = (TextView) findViewById(R.id.acceptDisplay);
-        cancelDisplay = (TextView) findViewById(R.id.cancelDisplay);
-        informationLayout = (LinearLayout) findViewById(R.id.informationLayout);
+        locationText =  findViewById(R.id.locationText);
+        statusDisplay =  findViewById(R.id.statusDisplay);
+        acceptDisplay =  findViewById(R.id.acceptDisplay);
+        cancelDisplay =  findViewById(R.id.cancelDisplay);
+        informationLayout =  findViewById(R.id.informationLayout);
         if (informationLayout != null) informationLayout.setVisibility(View.GONE);
     }
 
     private void configureMenu() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ListView menuList = (ListView) findViewById(R.id.menuList);
+        drawerLayout =  findViewById(R.id.drawer_layout);
+        ListView menuList =  findViewById(R.id.menuList);
         View header = getLayoutInflater().inflate(R.layout.menu_header, menuList, false);
         menuList.addHeaderView(header);
         String[] titles = getResources().getStringArray(R.array.menu_options);
@@ -422,7 +421,9 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     private void initLocation() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(PROVIDER, INTERVAL_IN_MILISECONDS, 1, this);
+            if (locationManager != null) {
+                locationManager.requestLocationUpdates(PROVIDER, INTERVAL_IN_MILISECONDS, 1, this);
+            }
         } catch (SecurityException e) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);
         }
@@ -439,9 +440,9 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             Toolbar parent = (Toolbar) optionsTitleBar.getCustomView().getParent();
             parent.setContentInsetsAbsolute(0, 0);
         }
-        TextView leftButton = (TextView) findViewById(R.id.leftButtonOptionsTitlebar);
-        rightButton = (TextView) findViewById(R.id.rightButtonOptionsTitlebar);
-        TextView title = (TextView) findViewById(R.id.titleOptionsTitlebar);
+        TextView leftButton =  findViewById(R.id.leftButtonOptionsTitlebar);
+        rightButton =  findViewById(R.id.rightButtonOptionsTitlebar);
+        TextView title =  findViewById(R.id.titleOptionsTitlebar);
         leftButton.setText(R.string.account);
         rightButton.setText(R.string.information);
         title.setText(R.string.app_name_display);
@@ -514,7 +515,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 } catch (Service.noSessionFound e) {
                     if (!noSessionFound) {
                         noSessionFound = true;
-                        postAlert(getString(R.string.session_error));
+                        postAlert(getString(R.string.error_sesion));
                         changeActivity(MainActivity.class, true);
                     }
                     finish();
@@ -543,7 +544,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         } catch (Service.noSessionFound e) {
             if (!noSessionFound) {
                 noSessionFound = true;
-                postAlert(getString(R.string.session_error));
+                postAlert(getString(R.string.error_sesion));
                 changeActivity(MainActivity.class, true);
             }
             finish();
@@ -581,7 +582,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     } catch (Service.noSessionFound e) {
                         if (!noSessionFound) {
                             noSessionFound = true;
-                            postAlert(getString(R.string.session_error));
+                            postAlert(getString(R.string.error_sesion));
                             changeActivity(MainActivity.class, true);
                         }
                         finish();
@@ -612,7 +613,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             } catch (Service.noSessionFound e) {
                 if (!noSessionFound) {
                     noSessionFound = true;
-                    postAlert(getString(R.string.session_error));
+                    postAlert(getString(R.string.error_sesion));
                     changeActivity(MainActivity.class, true);
                 }
                 finish();
@@ -754,8 +755,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             try {
                 Pair<String,Drawable> item = listItems.get(position);
                 Drawable icon = item.second;
-                TextView itemName = (TextView)itemView.findViewById(R.id.listItemName);
-                ImageView itemImage = (ImageView)itemView.findViewById(R.id.listItemImage);
+                TextView itemName = itemView.findViewById(R.id.listItemName);
+                ImageView itemImage = itemView.findViewById(R.id.listItemImage);
                 if (position < navigationItems.size() - 1) {
                     itemImage.setImageDrawable(icon);
                 } else {
@@ -844,7 +845,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        TextView title = (TextView) findViewById(R.id.titleOptionsTitlebar);
+        TextView title = findViewById(R.id.titleOptionsTitlebar);
         if (provider.equals(PROVIDER))
         {
             if (status == LocationProvider.OUT_OF_SERVICE || status == LocationProvider.TEMPORARILY_UNAVAILABLE)
@@ -858,7 +859,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onProviderEnabled(String provider) {
-        TextView title = (TextView) findViewById(R.id.titleOptionsTitlebar);
+        TextView title = findViewById(R.id.titleOptionsTitlebar);
         if (provider.equals(PROVIDER))
         {
             title.setTextColor(Color.rgb(7, 96, 53));
@@ -869,7 +870,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     public void onProviderDisabled(String provider) {
         if (provider.equals(PROVIDER))
         {
-            TextView title = (TextView) findViewById(R.id.titleOptionsTitlebar);
+            TextView title = findViewById(R.id.titleOptionsTitlebar);
             title.setTextColor(Color.RED);
         }
     }

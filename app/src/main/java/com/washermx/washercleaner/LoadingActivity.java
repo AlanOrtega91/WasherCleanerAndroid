@@ -57,7 +57,7 @@ public class LoadingActivity extends AppCompatActivity {
             ProfileReader.delete(getBaseContext());
             finish();
         } catch (User.noSessionFound e){
-            if (!MainActivity.onScreen) postAlert(getString(R.string.session_error));
+            if (!MainActivity.onScreen) postAlert(getString(R.string.error_sesion));
             ProfileReader.delete(getBaseContext());
             finish();
         }

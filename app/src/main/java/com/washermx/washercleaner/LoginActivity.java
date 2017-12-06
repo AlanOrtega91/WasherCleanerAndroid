@@ -32,8 +32,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void initView() {
         settings = getSharedPreferences(AppData.FILE, 0);
-        bEmail = (EditText) findViewById(R.id.email);
-        bPassword = (EditText) findViewById(R.id.password);
+        bEmail =  findViewById(R.id.email);
+        bPassword =  findViewById(R.id.password);
         configureActionBar();
     }
 
@@ -48,9 +48,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toolbar parent =(Toolbar) optionsTitleBar.getCustomView().getParent();
             parent.setContentInsetsAbsolute(0,0);
         }
-        TextView leftButton = (TextView)findViewById(R.id.leftButtonOptionsTitlebar);
-        TextView rightButton = (TextView)findViewById(R.id.rightButtonOptionsTitlebar);
-        TextView title = (TextView)findViewById(R.id.titleOptionsTitlebar);
+        TextView leftButton = findViewById(R.id.leftButtonOptionsTitlebar);
+        TextView rightButton = findViewById(R.id.rightButtonOptionsTitlebar);
+        TextView title = findViewById(R.id.titleOptionsTitlebar);
         leftButton.setText(R.string.cancel);
         rightButton.setText(R.string.ok);
         title.setText(R.string.log_in_title);

@@ -81,7 +81,7 @@
     <string name="no_location_service">Esta aplicacion no puede funcionar sin la ubicacion habilitada</string>
     <string name="init_date_string">0000/00/00 00:00 AM</string>
     <string name="accepting">ACEPTANDO…</string>
-    <string name="session_error">Error de sesion</string>
+    <string name="error_sesion">Error de sesion</string>
     <string name="image_description">Imagen Usuario</string>
     <string name="account">CUENTA</string>
     <string name="x">X</string>
@@ -90,6 +90,8 @@
     <string name="init_type_service">Tipo de Servicio</string>
     <string name="terms_alert">Al utilizar esta aplicacion aceptas los terminos y condiciones de uso en la pagina http://www.washer.mx</string>
     <string name="pagoEfectivo">Se solicito pagar en efectivo, deberas cobrar antes de iniciar el servicio.\nEl precio a cobrar es de %s</string>
+    <string name="actualizar_titulo">Existe una nueva actualizacion</string>
+    <string name="mensaje_nueva_version">Descarga la nueva version</string>
 
     <array name="products">
         <item>Eco</item>
